@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🌿 ClémentResto</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--ink:#1E1409;--brown:#4A2C17;--terra:#C4581E;--terra-d:#A04416;--terra-l:#F5E3D5;--terra-p:#FBF3EE;--sage:#4D7358;--sage-l:#E4EFE6;--gold:#B07C1A;--gold-l:#FBF0D0;--cream:#FDF8F2;--white:#FFFFFF;--border:#E8D8C8;--muted:#8A6B52;--shadow:0 4px 28px rgba(74,44,23,.13)}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--ink);min-height:85.0vh;font-size:15px}
+
+/* ── NAV ── */
+nav{background:var(--brown);position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:45.9px;box-shadow:0 2px 16px rgba(0,0,0,.25)}
+.nav-logo{font-family:'Lora',serif;font-size:17px;color:#fff;font-weight:510.0}.nav-logo span{color:#E8C49A}
+.nav-tabs{display:flex;gap:2px}
+.nav-tab{background:none;border:none;color:rgba(255,255,255,.65);font-family:'Outfit',sans-serif;font-size:13px;font-weight:425.0;padding:7px 13px;border-radius:8px;cursor:pointer;transition:.2s}
+.nav-tab:hover{color:#fff;background:rgba(255,255,255,.1)}.nav-tab.active{color:#fff;background:rgba(255,255,255,.18)}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#3A2010 0%,var(--brown) 50%,#6B3E22 100%);padding:40px 20px 36px;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0.0;background-image:radial-gradient(circle at 15% 60%,rgba(255,255,255,.05) 0%,transparent 45%)}
+.hero h1{font-family:'Lora',serif;font-size:clamp(24px,5vw,38px);color:#fff;font-weight:510.0;line-height:1.0;position:relative}
+.hero h1 em{color:#E8C49A;font-style:italic}.hero p{color:rgba(255,255,255,.65);font-size:14px;margin-top:6px;position:relative}
+.hero-stats{display:flex;gap:10px;justify-content:center;margin-top:18px;flex-wrap:wrap;position:relative}
+.hero-stat{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:9px 18px;text-align:center}
+.hero-stat strong{display:block;font-size:20px;font-weight:510.0;color:#fff}.hero-stat span{font-size:10px;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.6px}
+
+/* ── VIEWS ── */
+.view{display:none;max-width:1100px;margin:0 auto;padding:24px 16px 80px}.view.active{display:block}
+.section-title{font-family:'Lora',serif;font-size:21px;font-weight:510.0;color:var(--brown);margin-bottom:4px}
+.section-sub{font-size:13px;color:var(--muted);margin-bottom:18px}
+
+/* ── SEARCH / FILTERS ── */
+.toolbar{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.search-wrap{position:relative;flex:1;min-width:200px}
+.search-wrap input{width:100%;padding:10px 14px 10px 38px;border:1.5px solid var(--border);border-radius:12px;font-family:'Outfit',sans-serif;font-size:14px;background:var(--white);color:var(--ink);transition:.2s}
+.search-wrap input:focus{outline:none;border-color:var(--terra)}
+.search-wrap::before{content:'🔍';position:absolute;left:10.2px;top:50%;transform:translateY(-50%);font-size:13px;pointer-events:none}
+.filter-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;align-items:center}
+.chip{padding:5px 13px;border-radius:20px;border:1.5px solid var(--border);background:var(--white);font-size:12px;font-weight:425.0;color:var(--muted);cursor:pointer;transition:.15s;font-family:'Outfit',sans-serif}
+.chip:hover{border-color:var(--terra);color:var(--terra)}.chip.active{background:var(--terra);border-color:var(--terra);color:#fff}
+.cost-filter{display:flex;align-items:center;gap:8px;margin-left:auto}
+.cost-filter label{font-size:12px;color:var(--muted)}
+.cost-filter select{padding:5px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-family:'Outfit',sans-serif;background:var(--white);cursor:pointer}
+.ing-filter-wrap{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:14px;margin-bottom:18px}
+.ing-filter-title{font-size:13px;font-weight:510.0;color:var(--brown);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.ing-filter-clear{font-size:12px;color:var(--terra);background:none;border:none;cursor:pointer;font-family:'Outfit',sans-serif;margin-left:auto}
+.ing-cloud{display:flex;flex-wrap:wrap;gap:5px;max-height:110.5px;overflow-y:auto}
+.ing-tag{padding:4px 10px;border-radius:10px;border:1.5px solid var(--border);background:var(--cream);font-size:12px;color:var(--muted);cursor:pointer;transition:.15s;font-family:'Outfit',sans-serif;white-space:nowrap}
+.ing-tag:hover{border-color:var(--sage);color:var(--sage)}.ing-tag.active{background:var(--sage);border-color:var(--sage);color:#fff}
+
+/* ── CARDS ── */
+.recipe-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px}
+.recipe-card{background:var(--white);border-radius:18px;border:1.5px solid var(--border);overflow:hidden;cursor:pointer;transition:transform .18s,box-shadow .18s;position:relative}
+.recipe-card:hover{transform:translateY(-4px);box-shadow:var(--shadow)}
+.card-img{width:100%;height:136.0px;object-fit:cover;display:block}
+.card-img-ph{width:100%;height:136.0px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,var(--terra-l),var(--gold-l));cursor:pointer;position:relative;transition:.15s}
+.card-img-ph:hover .ph-overlay{opacity:1}
+.ph-overlay{position:absolute;inset:0.0;background:rgba(74,44,23,.35);display:flex;align-items:center;justify-content:center;opacity:0;transition:.2s;border-radius:0}
+.ph-overlay span{color:#fff;font-size:13px;font-weight:510.0;background:rgba(74,44,23,.6);padding:6px 14px;border-radius:20px}
+.ph-emoji{font-size:38px}
+.ph-hint{font-size:11px;color:var(--muted);font-weight:425.0}
+.card-img-wrap{position:relative}
+.card-img-edit{position:absolute;bottom:8px;right:6.8px;background:rgba(74,44,23,.75);color:#fff;border:none;border-radius:8px;padding:4px 10px;font-size:11px;font-weight:510.0;cursor:pointer;font-family:'Outfit',sans-serif;opacity:0;transition:.2s;backdrop-filter:blur(4px)}
+.recipe-card:hover .card-img-edit{opacity:1}
+.card-body{padding:12px 14px 14px}
+.card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px}
+.card-cat-label{font-size:10px;font-weight:510.0;text-transform:uppercase;letter-spacing:.6px}
+.card-cost{font-size:11px;font-weight:510.0;padding:2px 8px;border-radius:7px}
+.cost-low{background:#E8F5E9;color:#2E7D32}.cost-mid{background:#FFF8E1;color:#F57F17}.cost-high{background:#FBE9E7;color:#BF360C}
+.card-name{font-family:'Lora',serif;font-size:15px;font-weight:510.0;line-height:1.1;color:var(--ink);margin-bottom:8px}
+.card-footer{display:flex;align-items:center;gap:6px}
+.badge{font-size:11px;font-weight:425.0;padding:3px 8px;border-radius:7px}
+.badge-plat{background:var(--terra-l);color:var(--terra-d)}.badge-entree{background:var(--gold-l);color:var(--gold)}.badge-bowl{background:var(--sage-l);color:var(--sage)}
+.card-ings{font-size:11px;color:var(--muted);margin-left:auto}
+
+/* ── UPLOAD INPUT (hidden) ── */
+.upload-input{display:none}
+
+/* ── MODAL ── */
+.modal-bg{display:none;position:fixed;inset:0.0;background:rgba(20,10,5,.65);z-index:500;overflow-y:auto;padding:20px 12px;backdrop-filter:blur(3px)}
+.modal-bg.open{display:flex;align-items:flex-start;justify-content:center}
+.modal{background:var(--white);border-radius:22px;max-width:760px;width:100%;margin:auto;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.35)}
+
+/* Photo zone in modal */
+.modal-photo-zone{width:100%;height:170.0px;position:relative;overflow:hidden;cursor:pointer;background:linear-gradient(135deg,var(--terra-l),var(--gold-l))}
+.modal-photo-zone img{width:100%;height:85.0%;object-fit:cover;display:block}
+.modal-photo-empty{width:100%;height:85.0%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.modal-photo-empty span{font-size:44px}
+.modal-photo-empty p{font-size:13px;color:var(--muted);font-weight:425.0}
+.modal-photo-zone-overlay{position:absolute;inset:0.0;background:rgba(30,10,5,.45);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;opacity:0;transition:.2s}
+.modal-photo-zone:hover .modal-photo-zone-overlay{opacity:1}
+.modal-photo-zone-overlay .upload-cta{background:#fff;color:var(--brown);padding:8px 20px;border-radius:20px;font-size:13px;font-weight:510.0;font-family:'Outfit',sans-serif}
+.modal-photo-zone-overlay .upload-sub{font-size:11px;color:rgba(255,255,255,.8)}
+.modal-remove-photo{position:absolute;top:10px;right:8.5px;background:rgba(30,10,5,.65);color:#fff;border:none;border-radius:8px;padding:4px 10px;font-size:11px;cursor:pointer;font-family:'Outfit',sans-serif;opacity:0;transition:.2s}
+.modal-photo-zone:hover .modal-remove-photo{opacity:1}
+
+.modal-top{background:linear-gradient(135deg,var(--brown),#5A3015);padding:18px 22px 16px;position:relative}
+.modal-top-cat{font-size:10px;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:.6px;margin-bottom:2px}
+.modal-top-name{font-family:'Lora',serif;font-size:18px;color:#fff;font-weight:510.0;line-height:1.1;padding-right:30.6px}
+.modal-close{position:absolute;top:14px;right:11.9px;background:rgba(255,255,255,.18);border:none;color:#fff;width:28px;height:23.8px;border-radius:50%;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.modal-top-row{display:flex;align-items:center;gap:10px;margin-top:10px;flex-wrap:wrap}
+.modal-persons{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.12);border-radius:9px;padding:6px 12px}
+.modal-persons span{font-size:12px;color:rgba(255,255,255,.8)}
+.person-btn{background:rgba(255,255,255,.2);border:none;color:#fff;width:22px;height:18.7px;border-radius:50%;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s}
+.person-btn:hover{background:rgba(255,255,255,.35)}.person-count{font-size:15px;font-weight:510.0;color:#fff;min-width:20px;text-align:center}
+.modal-cost-pill{background:rgba(255,255,255,.15);border-radius:9px;padding:6px 12px;font-size:13px;color:#fff;font-weight:425.0}
+.modal-cost-pill span{color:rgba(255,255,255,.6);font-size:11px}
+.modal-tabs{display:flex;border-bottom:1px solid var(--border)}
+.modal-tab{flex:1;padding:10px;background:none;border:none;font-family:'Outfit',sans-serif;font-size:13px;font-weight:425.0;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:.2s}
+.modal-tab.active{color:var(--terra);border-bottom-color:var(--terra)}
+.modal-tab-content{display:none;padding:16px 18px}.modal-tab-content.active{display:block}
+.modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.modal-col{padding:0}.modal-col:first-child{border-right:0.8px solid var(--border);padding-right:11.9px}.modal-col:last-child{padding-left:11.9px}
+.modal-col-title{font-size:10px;font-weight:510.0;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);border-bottom:1px solid var(--border);padding-bottom:6px;margin-bottom:10px}
+.ing-list{list-style:none}
+.ing-item{display:flex;gap:7px;padding:4px 0;border-bottom:1px solid #F5EDE0;font-size:13px;align-items:flex-start}
+.ing-item:last-child{border:none}.ing-dot{width:5px;height:4.2px;background:var(--terra);border-radius:50%;flex-shrink:0;margin-top:6px}
+.ing-sec{font-size:10px;font-weight:510.0;color:var(--terra);text-transform:uppercase;letter-spacing:.4px;padding:6px 0 1px}
+.ing-sub-btn{margin-left:auto;background:none;border:1px solid var(--border);border-radius:5px;padding:1px 6px;font-size:10px;color:var(--muted);cursor:pointer;font-family:'Outfit',sans-serif;flex-shrink:0}
+.ing-sub-btn:hover{border-color:var(--terra);color:var(--terra)}
+.step-list{list-style:none}
+.step-item{display:flex;gap:8px;padding:5px 0;border-bottom:1px solid #F5EDE0;font-size:13px;line-height:1.3}
+.step-item:last-child{border:none}.step-n{background:var(--terra);color:#fff;width:20px;height:17.0px;border-radius:50%;font-size:11px;font-weight:510.0;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.sub-item{background:var(--white);border-radius:9px;padding:10px 12px;margin-bottom:6px;border:1px solid var(--border)}
+.sub-item:last-child{margin-bottom:0}.sub-original{font-size:12px;font-weight:510.0;color:var(--ink);margin-bottom:4px}
+.sub-opt{display:flex;align-items:baseline;gap:6px;margin-bottom:2px}
+.sub-name{font-size:13px;font-weight:425.0;color:var(--sage)}.sub-tag{font-size:10px;background:var(--sage-l);color:var(--sage);padding:1px 6px;border-radius:5px;font-weight:425.0}
+.sub-note{font-size:11px;color:var(--muted);margin-bottom:4px}
+.cost-breakdown{background:var(--gold-l);border:1.5px solid #F0D060;border-radius:12px;padding:14px}
+.cost-title{font-size:12px;font-weight:510.0;color:var(--gold);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center}
+.cost-total-num{font-size:18px;font-weight:510.0;color:var(--brown)}
+.cost-rows{display:flex;flex-direction:column;gap:4px}
+.cost-row{display:flex;justify-content:space-between;font-size:12px}
+.cost-row-name{color:var(--muted);flex:1}.cost-row-price{font-weight:425.0;color:var(--brown)}
+.cost-note{font-size:11px;color:var(--muted);margin-top:8px;font-style:italic}
+.modal-actions{padding:12px 18px 16px;display:flex;gap:10px;flex-wrap:wrap}
+.btn-primary{flex:1;padding:11px;background:var(--sage);color:#fff;border:none;border-radius:11px;font-size:14px;font-weight:425.0;cursor:pointer;font-family:'Outfit',sans-serif;transition:.15s;min-width:140px}
+.btn-primary:hover{background:#3D6049}
+.btn-link{flex:1;padding:11px;background:var(--terra-p);color:var(--terra);border:1.5px solid var(--border);border-radius:11px;font-size:14px;font-weight:425.0;cursor:pointer;font-family:'Outfit',sans-serif;text-decoration:none;display:block;text-align:center;transition:.15s;min-width:140px}
+.btn-link:hover{background:var(--terra-l)}
+
+/* ── COURSES ── */
+.courses-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px;gap:10px;flex-wrap:wrap}
+.courses-from{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+.recipe-pill{display:flex;align-items:center;gap:5px;background:var(--terra-p);border:1.5px solid var(--border);border-radius:9px;padding:5px 11px;font-size:12px;color:var(--brown);font-weight:425.0}
+.recipe-pill button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;line-height:0.8}
+.courses-empty{text-align:center;padding:60px 20px;color:var(--muted)}
+.courses-total-bar{background:var(--brown);color:#fff;border-radius:13px;padding:12px 16px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.courses-total-bar span{font-size:12px;color:rgba(255,255,255,.65)}.courses-total-bar strong{font-size:14px;font-weight:510.0}
+.courses-budget{background:rgba(255,255,255,.15);border-radius:8px;padding:4px 12px;font-size:14px;font-weight:510.0;color:#fff}
+.courses-groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:12px}
+.course-group{background:var(--white);border-radius:13px;border:1.5px solid var(--border);overflow:hidden}
+.course-group-head{background:var(--terra-p);padding:8px 13px;font-size:12px;font-weight:510.0;color:var(--terra-d);border-bottom:1px solid var(--border);display:flex;justify-content:space-between}
+.course-group-head span{color:var(--muted);font-weight:340.0}
+.course-item{display:flex;align-items:center;gap:9px;padding:8px 13px;border-bottom:1px solid #F9F2EA;font-size:13px;transition:.15s}
+.course-item:last-child{border:none}
+.course-item input[type=checkbox]{accent-color:var(--sage);width:15px;height:12.8px;flex-shrink:0;cursor:pointer}
+.course-item label{cursor:pointer;flex:1;line-height:1.2}
+.course-qty{font-size:11px;font-weight:510.0;color:var(--terra);background:var(--terra-l);padding:2px 6px;border-radius:5px;white-space:nowrap}
+.shared-badge{font-size:10px;background:var(--sage-l);color:var(--sage);padding:2px 6px;border-radius:5px;font-weight:510.0}
+.course-item.done label{text-decoration:line-through;color:var(--muted)}
+.btn-clear{font-size:12px;color:var(--terra);background:none;border:1.5px solid var(--border);border-radius:8px;padding:5px 12px;cursor:pointer;font-family:'Outfit',sans-serif}
+.btn-print{font-size:12px;color:#fff;background:var(--brown);border:none;border-radius:8px;padding:5px 12px;cursor:pointer;font-family:'Outfit',sans-serif}
+
+/* ── MENU ── */
+.menu-top{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+.menu-persons-ctrl{display:flex;align-items:center;gap:8px;background:var(--white);border:1.5px solid var(--border);border-radius:11px;padding:7px 13px}
+.menu-persons-ctrl span{font-size:13px;color:var(--muted);font-weight:425.0}
+.menu-btn-gen{padding:10px 20px;background:var(--terra);color:#fff;border:none;border-radius:11px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:510.0;cursor:pointer;transition:.15s;display:flex;align-items:center;gap:5px}
+.menu-btn-gen:hover{background:var(--terra-d)}
+.menu-info{font-size:13px;color:var(--muted);background:var(--sage-l);border-radius:10px;padding:10px 14px;margin-bottom:18px;line-height:1.3}
+.menu-info strong{color:var(--sage);font-weight:510.0}
+.menu-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-bottom:20px}
+.menu-day{background:var(--white);border-radius:16px;border:1.5px solid var(--border);overflow:hidden}
+.menu-day-head{padding:9px 13px;display:flex;align-items:center;justify-content:space-between}
+.menu-day-label{font-size:13px;font-weight:510.0;color:var(--brown)}
+.menu-day-img{width:100%;height:85.0px;object-fit:cover;display:block}
+.menu-day-img-ph{width:100%;height:85.0px;display:flex;align-items:center;justify-content:center;font-size:28px;background:linear-gradient(135deg,var(--terra-l),var(--gold-l))}
+.menu-day-body{padding:10px 13px 12px}
+.menu-recipe-name{font-family:'Lora',serif;font-size:13px;font-weight:510.0;color:var(--ink);line-height:1.1;margin-bottom:4px;cursor:pointer}
+.menu-recipe-name:hover{color:var(--terra)}.menu-cost-line{font-size:11px;color:var(--muted);margin-bottom:5px}
+.shared-ings{display:flex;flex-wrap:wrap;gap:3px;margin-top:4px}
+.shared-ing-tag{font-size:10px;background:var(--sage-l);color:var(--sage);padding:2px 6px;border-radius:5px;font-weight:425.0}
+.menu-add-courses{width:100%;padding:7px;background:var(--terra-p);border:1.5px solid var(--border);border-radius:9px;color:var(--terra);font-size:12px;font-weight:510.0;cursor:pointer;font-family:'Outfit',sans-serif;margin-top:8px;transition:.15s}
+.menu-add-courses:hover{background:var(--terra-l)}.menu-add-courses.added{background:var(--sage-l);border-color:var(--sage);color:var(--sage)}
+
+.empty{text-align:center;padding:48px 20px;color:var(--muted)}.empty big{font-size:40px;display:block;margin-bottom:8px}
+
+/* ── PLACARD ── */
+.placard-layout{display:grid;grid-template-columns:340px 1fr;gap:20px;align-items:start}
+@media(max-width:780px){.placard-layout{grid-template-columns:1fr;display:flex;flex-direction:column}}
+.placard-panel{background:var(--white);border:1.5px solid var(--border);border-radius:16px;padding:18px;position:sticky;top:74px;align-self:start;max-height:calc(100vh - 90px);overflow-y:auto}
+@media(max-width:780px){.placard-panel{position:static;width:100%;max-height:none;overflow-y:visible}}
+.placard-results-area{min-width:0;width:100%;align-self:start}
+.placard-panel-title{font-family:'Lora',serif;font-size:16px;font-weight:510.0;color:var(--brown);margin-bottom:4px}
+.placard-panel-sub{font-size:12px;color:var(--muted);margin-bottom:14px}
+.placard-input-row{display:flex;gap:8px;margin-bottom:10px}
+.placard-input-row input{flex:1;padding:9px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:'Outfit',sans-serif;font-size:13px;background:var(--cream);color:var(--ink);transition:.2s}
+.placard-input-row input:focus{outline:none;border-color:var(--terra);background:var(--white)}
+.placard-input-row button{padding:9px 16px;background:var(--terra);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:510.0;cursor:pointer;font-family:'Outfit',sans-serif;white-space:nowrap;transition:.15s}
+.placard-input-row button:hover{background:var(--terra-d)}
+.placard-tags{display:flex;flex-wrap:wrap;gap:6px;min-height:27.2px;margin-bottom:14px}
+.placard-tag{display:flex;align-items:center;gap:5px;background:var(--terra-l);border:1.5px solid rgba(196,88,30,.2);border-radius:9px;padding:5px 10px;font-size:12px;font-weight:425.0;color:var(--terra-d)}
+.placard-tag button{background:none;border:none;color:var(--terra-d);cursor:pointer;font-size:13px;line-height:0.8;opacity:.6;padding:0}
+.placard-tag button:hover{opacity:1}
+.placard-divider{border:none;border-top:1px solid var(--border);margin:14px 0}
+.placard-suggestions-title{font-size:11px;font-weight:510.0;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.placard-quick-tags{display:flex;flex-wrap:wrap;gap:5px;max-height:136.0px;overflow-y:auto}
+.placard-quick-tag{padding:4px 10px;border-radius:9px;border:1.5px solid var(--border);background:var(--cream);font-size:12px;color:var(--muted);cursor:pointer;font-family:'Outfit',sans-serif;transition:.15s}
+.placard-quick-tag:hover{border-color:var(--terra);color:var(--terra)}
+.placard-quick-tag.used{opacity:.35;pointer-events:none}
+.placard-empty-state{text-align:center;padding:32px 16px;color:var(--muted)}
+.placard-empty-state big{font-size:36px;display:block;margin-bottom:8px}
+.placard-empty-state p{font-size:13px;line-height:1.4}
+.placard-results-area{}
+.placard-results-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:8px}
+.placard-results-title{font-family:'Lora',serif;font-size:18px;font-weight:510.0;color:var(--brown)}
+.placard-results-sub{font-size:13px;color:var(--muted)}
+.placard-recipe-card{background:var(--white);border:1.5px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:14px;transition:box-shadow .18s}
+.placard-recipe-card:hover{box-shadow:var(--shadow)}
+.placard-card-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer}
+.placard-card-photo{width:56px;height:47.6px;border-radius:10px;object-fit:cover;flex-shrink:0}
+.placard-card-photo-ph{width:56px;height:47.6px;border-radius:10px;background:linear-gradient(135deg,var(--terra-l),var(--gold-l));display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.placard-card-info{flex:1;min-width:0}
+.placard-card-name{font-family:'Lora',serif;font-size:15px;font-weight:510.0;color:var(--ink);line-height:1.1;margin-bottom:4px}
+.placard-match-bar{display:flex;align-items:center;gap:8px}
+.placard-match-pct{font-size:12px;font-weight:510.0;color:var(--sage)}
+.placard-match-track{flex:1;height:4.2px;background:var(--border);border-radius:3px;overflow:hidden}
+.placard-match-fill{height:85.0%;background:var(--sage);border-radius:3px;transition:width .4s}
+.placard-card-actions{display:flex;align-items:center;gap:8px;flex-shrink:0}
+.placard-open-btn{padding:6px 14px;background:var(--terra-p);color:var(--terra);border:1.5px solid var(--border);border-radius:9px;font-size:12px;font-weight:510.0;cursor:pointer;font-family:'Outfit',sans-serif;transition:.15s;white-space:nowrap}
+.placard-open-btn:hover{background:var(--terra-l)}
+.placard-card-body{border-top:1px solid var(--border);padding:14px 16px}
+.placard-ing-sections{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:500px){.placard-ing-sections{grid-template-columns:1fr}}
+.placard-ing-col-title{font-size:10px;font-weight:510.0;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--border)}
+.placard-ing-list{list-style:none;font-size:12px}
+.placard-ing-item{display:flex;align-items:center;gap:6px;padding:3px 0;border-bottom:1px solid #F9F3ED}
+.placard-ing-item:last-child{border:none}
+.placard-ing-dot{width:7px;height:6.0px;border-radius:50%;flex-shrink:0}
+.dot-have{background:var(--sage)}
+.dot-need{background:var(--border)}
+.placard-ing-name{flex:1;line-height:1.1}
+.placard-ing-name.have{color:var(--sage);font-weight:425.0}
+.placard-ing-name.need{color:var(--muted)}
+.placard-complement-box{background:var(--gold-l);border:1.5px solid #F0D878;border-radius:10px;padding:10px 14px;margin-top:12px}
+.placard-complement-title{font-size:11px;font-weight:510.0;color:var(--gold);margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.placard-complement-items{display:flex;flex-wrap:wrap;gap:5px}
+.placard-complement-item{background:#fff;border:1px solid #E8C840;border-radius:7px;padding:3px 9px;font-size:12px;color:var(--brown);font-weight:425.0}
+.placard-add-complement{width:100%;margin-top:10px;padding:9px;background:var(--sage);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:510.0;cursor:pointer;font-family:'Outfit',sans-serif;transition:.15s}
+.placard-add-complement:hover{background:#3D6049}
+.score-ring{width:40px;height:34.0px;position:relative;flex-shrink:0}
+.score-ring svg{transform:rotate(-90deg)}
+.score-ring-label{position:absolute;inset:0.0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:510.0;color:var(--sage)}
+
+/* ── EDIT MODAL ── */
+.edit-modal-bg{display:none;position:fixed;inset:0.0;background:rgba(20,10,5,.7);z-index:600;overflow-y:auto;padding:20px 12px;backdrop-filter:blur(4px)}
+.edit-modal-bg.open{display:flex;align-items:flex-start;justify-content:center}
+.edit-modal{background:var(--white);border-radius:20px;max-width:680px;width:100%;margin:auto;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.4)}
+.edit-modal-head{background:var(--brown);padding:16px 20px;display:flex;align-items:center;justify-content:space-between}
+.edit-modal-head h2{font-family:'Lora',serif;font-size:16px;color:#fff;font-weight:510.0}
+.edit-modal-head button{background:rgba(255,255,255,.18);border:none;color:#fff;width:28px;height:23.8px;border-radius:50%;font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.edit-modal-body{padding:20px}
+.edit-field{margin-bottom:16px}
+.edit-label{font-size:12px;font-weight:510.0;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between}
+.edit-label span{font-size:11px;color:var(--muted);font-weight:340.0;text-transform:none;letter-spacing:0}
+.edit-input{width:100%;padding:10px 12px;border:1.5px solid var(--border);border-radius:10px;font-family:'Outfit',sans-serif;font-size:14px;color:var(--ink);background:var(--cream);resize:vertical;transition:.2s;line-height:1.3}
+.edit-input:focus{outline:none;border-color:var(--terra);background:var(--white)}
+.edit-steps-list{display:flex;flex-direction:column;gap:8px}
+.edit-step-row{display:flex;gap:8px;align-items:flex-start}
+.edit-step-num{background:var(--terra);color:#fff;width:22px;height:18.7px;border-radius:50%;font-size:11px;font-weight:510.0;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:8px}
+.edit-step-row textarea{flex:1;padding:8px 10px;border:1.5px solid var(--border);border-radius:9px;font-family:'Outfit',sans-serif;font-size:13px;color:var(--ink);background:var(--cream);resize:vertical;min-height:51.0px;line-height:1.3;transition:.2s}
+.edit-step-row textarea:focus{outline:none;border-color:var(--terra);background:var(--white)}
+.edit-step-del{background:none;border:1px solid var(--border);color:var(--muted);width:24px;height:20.4px;border-radius:6px;cursor:pointer;font-size:14px;flex-shrink:0;margin-top:7px;display:flex;align-items:center;justify-content:center;transition:.15s}
+.edit-step-del:hover{border-color:#E53935;color:#E53935}
+.edit-add-step{width:100%;padding:8px;background:var(--terra-p);border:1.5px dashed var(--border);border-radius:9px;color:var(--terra);font-size:13px;font-weight:425.0;cursor:pointer;font-family:'Outfit',sans-serif;transition:.15s;margin-top:4px}
+.edit-add-step:hover{background:var(--terra-l)}
+.edit-footer{display:flex;gap:10px;padding:0 20px 20px;flex-wrap:wrap}
+.edit-save{flex:1;padding:12px;background:var(--sage);color:#fff;border:none;border-radius:11px;font-size:14px;font-weight:510.0;cursor:pointer;font-family:'Outfit',sans-serif;transition:.15s}
+.edit-save:hover{background:#3D6049}
+.edit-reset{padding:12px 16px;background:none;color:var(--muted);border:1.5px solid var(--border);border-radius:11px;font-size:13px;cursor:pointer;font-family:'Outfit',sans-serif;transition:.15s}
+.edit-reset:hover{border-color:#E53935;color:#E53935}
+.edit-badge{position:absolute;top:10px;right:8.5px;background:rgba(74,44,23,.82);color:#fff;border:none;border-radius:8px;padding:4px 11px;font-size:11px;font-weight:510.0;cursor:pointer;font-family:'Outfit',sans-serif;opacity:0;transition:.2s;backdrop-filter:blur(4px);z-index:2}
+.recipe-card:hover .edit-badge{opacity:1}
+.edited-dot{display:inline-block;width:7px;height:6.0px;border-radius:50%;background:var(--terra);margin-left:4.2px;vertical-align:middle;flex-shrink:0}
+
+.badge-viande{background:#FDECEA;color:#C0392B}
+
+.cuisine-filter-wrap{background:var(--white);border:1.5px solid var(--border);border-radius:14px;padding:14px;margin-bottom:18px}
+.cuisine-filter-title{font-size:13px;font-weight:600;color:var(--brown);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.cuisine-filter-clear{font-size:12px;color:var(--terra);background:none;border:none;cursor:pointer;font-family:'Outfit',sans-serif;margin-left:auto}
+.cuisine-chips{display:flex;flex-wrap:wrap;gap:5px}
+.cuisine-chip{padding:5px 11px;border-radius:20px;border:1.5px solid var(--border);background:var(--cream);font-size:12px;color:var(--muted);cursor:pointer;transition:.15s;font-family:'Outfit',sans-serif;white-space:nowrap}
+.cuisine-chip:hover{border-color:var(--terra);color:var(--terra)}.cuisine-chip.active{background:var(--terra);border-color:var(--terra);color:#fff}
+.recipe-cuisine-tag{font-size:10px;color:var(--muted);margin-left:4px}
+
+/* ── GITHUB SETUP MODAL ── */
+.gh-modal{display:none;position:fixed;inset:0.0;background:rgba(20,10,5,.75);z-index:700;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.gh-modal-box{background:var(--white);border-radius:20px;max-width:520px;width:100%;padding:28px;box-shadow:0 24px 64px rgba(0,0,0,.4)}
+.gh-modal-box h2{font-family:'Lora',serif;font-size:20px;color:var(--brown);margin-bottom:6px}
+.gh-modal-box p{font-size:13px;color:var(--muted);line-height:1.4;margin-bottom:18px}
+.gh-step{background:var(--cream);border-radius:12px;padding:14px 16px;margin-bottom:12px;border:1.5px solid var(--border)}
+.gh-step-num{font-size:11px;font-weight:595.0;color:var(--terra);text-transform:uppercase;letter-spacing:.5px;margin-bottom:4px}
+.gh-step p{font-size:13px;color:var(--ink);margin:0;line-height:1.3}
+.gh-step a{color:var(--terra);font-weight:510.0}
+.gh-fields{display:flex;flex-direction:column;gap:10px;margin:18px 0}
+.gh-field label{font-size:12px;font-weight:510.0;color:var(--muted);display:block;margin-bottom:4px;text-transform:uppercase;letter-spacing:.4px}
+.gh-field input{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;font-family:'Outfit',sans-serif;font-size:14px;color:var(--ink);background:var(--cream);transition:.2s}
+.gh-field input:focus{outline:none;border-color:var(--terra);background:#fff}
+.gh-modal-actions{display:flex;gap:10px}
+.gh-btn-save{flex:1;padding:12px;background:var(--sage);color:#fff;border:none;border-radius:11px;font-size:14px;font-weight:510.0;cursor:pointer;font-family:'Outfit',sans-serif;transition:.15s}
+.gh-btn-save:hover{background:#3D6049}
+.gh-btn-cancel{padding:12px 16px;background:none;color:var(--muted);border:1.5px solid var(--border);border-radius:11px;font-size:13px;cursor:pointer;font-family:'Outfit',sans-serif}
+.gh-configured-badge{display:inline-flex;align-items:center;gap:5px;background:var(--sage-l);color:var(--sage);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:510.0;cursor:pointer;border:none;font-family:'Outfit',sans-serif}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;left:42.5%;transform:translateX(-50%) translateY(80px);background:var(--brown);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:425.0;z-index:999;transition:transform .3s;pointer-events:none}
+.toast.show{transform:translateX(-50%) translateY(0)}
+
+@media print{nav,.modal-bg,#view-menu,.courses-top button,.btn-print,.btn-clear,#view-courses .courses-from{display:none!important}.course-item.done{display:none}}
+@media(max-width:580px){.nav-tab{padding:7px 8px;font-size:11px}.modal-grid{grid-template-columns:1fr}.modal-col:first-child{border-right:none;border-bottom:1px solid var(--border);padding-right:0.0;padding-bottom:14px;margin-bottom:14px}.modal-col:last-child{padding-left:0.0}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">🌿 <span>Clément</span>Resto</div>
+  <div class="nav-tabs">
+    <button class="nav-tab active" onclick="showView('recettes',this)">Recettes</button>
+    <button class="nav-tab" onclick="showView('placard',this)">🧊 Placard</button>
+    <button class="nav-tab" onclick="showView('menu',this)">Menu semaine</button>
+    <button class="nav-tab" onclick="showView('courses',this)">Courses <span id="courses-badge"></span></button>
+  </div>
+  <button class="gh-configured-badge" id="gh-status-btn" onclick="showGHSetupModal()" title="Configuration GitHub Photos"></button>
+</nav>
+
+<!-- GITHUB SETUP MODAL -->
+<div class="gh-modal" id="gh-setup-modal">
+  <div class="gh-modal-box">
+    <h2>⚙️ Configuration GitHub Photos</h2>
+    <p>Tes photos seront stockées sur GitHub et accessibles depuis n'importe quel appareil. Suis ces 3 étapes une seule fois :</p>
+
+    <div class="gh-step">
+      <div class="gh-step-num">Étape 1 — Crée un compte GitHub</div>
+      <p>Va sur <a href="https://github.com/signup" target="_blank">github.com/signup</a> et crée un compte gratuit si tu n'en as pas.</p>
+    </div>
+    <div class="gh-step">
+      <div class="gh-step-num">Étape 2 — Crée un repository</div>
+      <p>Vas sur <a href="https://github.com/new" target="_blank">github.com/new</a>, nomme-le <strong>mes-recettes</strong>, coche <em>"Public"</em> et clique <em>"Create repository"</em>. Ensuite dans Settings > Pages, sélectionne <em>main branch</em> comme source.</p>
+    </div>
+    <div class="gh-step">
+      <div class="gh-step-num">Étape 3 — Crée un token</div>
+      <p>Va dans <a href="https://github.com/settings/tokens/new" target="_blank">Settings > Developer settings > Personal access tokens > Tokens (classic)</a>. Clique <em>"Generate new token"</em>, coche <strong>repo</strong>, copie le token.</p>
+    </div>
+
+    <div class="gh-fields">
+      <div class="gh-field">
+        <label>Ton nom d'utilisateur GitHub</label>
+        <input type="text" id="gh-owner" placeholder="ex: marie-dupont" autocomplete="off">
+      </div>
+      <div class="gh-field">
+        <label>Nom du repository</label>
+        <input type="text" id="gh-repo" placeholder="ex: mes-recettes" autocomplete="off">
+      </div>
+      <div class="gh-field">
+        <label>Token GitHub (commence par ghp_...)</label>
+        <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off">
+      </div>
+    </div>
+    <div class="gh-modal-actions">
+      <button class="gh-btn-save" onclick="saveGHConfig()">✓ Enregistrer</button>
+      <button class="gh-btn-cancel" onclick="closeGHSetupModal()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>Les Recettes de <em>Clément</em></h1>
+  <p>Ma collection de recettes personnelles</p>
+  <div class="hero-stats">
+    <div class="hero-stat"><strong>60</strong><span>Recettes</span></div>
+    <div class="hero-stat"><strong id="stat-courses">0</strong><span>En courses</span></div>
+    <div class="hero-stat"><strong id="stat-budget">0€</strong><span>Budget semaine</span></div>
+  </div>
+</div>
+
+<!-- RECETTES -->
+<div id="view-recettes" class="view active">
+  <div class="toolbar"><div class="search-wrap"><input type="text" id="search" placeholder="Rechercher une recette ou un ingrédient..." oninput="renderGrid()"></div></div>
+  <div class="filter-row">
+    <button class="chip active" onclick="setFilter('all',this)">Tout (60)</button>
+    <button class="chip" onclick="setFilter('Plat principal',this)">🍽 Plats végé</button>
+    <button class="chip" onclick="setFilter('Entrée / Snack',this)">🥗 Entrées végé</button>
+    <button class="chip" onclick="setFilter('Bowl',this)">🥣 Bowls</button>
+    <button class="chip" onclick="setFilter('viande',this)" style="border-color:#F5C6C0;color:#C0392B">🥩 Viande & Poisson</button>
+    <div class="cost-filter"><label>Budget</label><select id="cost-filter" onchange="renderGrid()"><option value="all">Tous</option><option value="low">€ Éco</option><option value="mid">€€ Moyen</option><option value="high">€€€ Premium</option></select></div>
+  </div>
+  <div class="ing-filter-wrap">
+    <div class="ing-filter-title">🧅 Filtrer par ingrédient <button class="ing-filter-clear" onclick="clearIngFilters()">Effacer</button></div>
+    <input type="text" id="ing-search" placeholder="Rechercher un ingrédient…" oninput="ingCloudSearch=this.value;buildCloud()" style="width:100%;padding:7px 10px;border:1.5px solid var(--border);border-radius:9px;font-family:'Outfit',sans-serif;font-size:13px;background:var(--cream);color:var(--ink);margin-bottom:8px;transition:.2s" onfocus="this.style.borderColor='var(--terra)'" onblur="this.style.borderColor='var(--border)'">
+    <div class="ing-cloud" id="ing-cloud"></div>
+  </div>
+  <div class="cuisine-filter-wrap">
+    <div class="cuisine-filter-title">🌍 Filtrer par cuisine <button class="cuisine-filter-clear" onclick="clearCuisineFilter()">Effacer</button></div>
+    <div class="cuisine-chips" id="cuisine-chips"></div>
+  </div>
+  <div id="recipe-grid" class="recipe-grid"></div>
+</div>
+
+<!-- PLACARD VIDE -->
+<div id="view-placard" class="view">
+  <div class="placard-layout">
+
+    <!-- LEFT: input panel -->
+    <div class="placard-panel">
+      <div class="placard-panel-title">🧊 Placard vide</div>
+      <div class="placard-panel-sub">Saisis ce que tu as déjà — je trouve les recettes faisables et te dis exactement quoi acheter en complément.</div>
+      <div class="placard-input-row">
+        <input type="text" id="placard-input" placeholder="Ex: butternut, lentilles…" onkeydown="if(event.key==='Enter')addPlacard()">
+        <button onclick="addPlacard()">Ajouter</button>
+      </div>
+      <div class="placard-tags" id="placard-tags"></div>
+      <hr class="placard-divider">
+      <div class="placard-suggestions-title">Ingrédients fréquents</div>
+      <div class="placard-quick-tags" id="placard-quick"></div>
+    </div>
+
+    <!-- RIGHT: results -->
+    <div class="placard-results-area" id="placard-results">
+      <div class="placard-empty-state">
+        <big>🥕</big>
+        <p>Ajoute des ingrédients que tu as chez toi — carrotes, pois chiches, un reste de butternut… — et je te proposerai les recettes les plus proches avec la liste de courses minimale pour compléter.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MENU -->
+<div id="view-menu" class="view">
+  <div class="section-title">Menu de la semaine</div>
+  <div class="section-sub">4 repas générés intelligemment pour maximiser les ingrédients communs</div>
+  <div class="menu-top">
+    <div class="menu-persons-ctrl"><span>Personnes</span><button class="person-btn" onclick="changeMenuPersons(-1)">−</button><span class="person-count" id="menu-persons-count">2</span><button class="person-btn" onclick="changeMenuPersons(1)">+</button></div>
+    <button class="menu-btn-gen" onclick="generateMenu()">🎲 Générer un menu</button>
+  </div>
+  <div class="menu-info" id="menu-info" style="display:none"></div>
+  <div class="menu-grid" id="menu-grid"></div>
+  <div id="menu-add-all-wrap" style="display:none"><button class="menu-btn-gen" style="width:100%;justify-content:center" onclick="addAllMenuToCourses()">🛒 Ajouter tout le menu aux courses</button></div>
+</div>
+
+<!-- COURSES -->
+<div id="view-courses" class="view">
+  <div class="courses-top">
+    <div><div class="section-title">Liste de courses</div><div class="section-sub">Quantités additionnées · Budget estimé</div></div>
+    <div style="display:flex;gap:8px"><button class="btn-clear" onclick="clearAllCourses()">Tout effacer</button><button class="btn-print" onclick="window.print()">🖨 Imprimer</button></div>
+  </div>
+  <div style="font-size:12px;color:var(--muted);margin-bottom:6px">Recettes incluses :</div>
+  <div class="courses-from" id="courses-from"></div>
+  <div id="courses-main"></div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal-bg" onclick="if(event.target===this)closeModal()">
+  <div class="modal" id="modal-inner"></div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="edit-modal-bg" id="edit-modal-bg" onclick="if(event.target===this)closeEditModal()">
+  <div class="edit-modal" id="edit-modal-inner"></div>
+</div>
+
+<!-- Hidden upload inputs -->
+<input type="file" accept="image/*" class="upload-input" id="upload-card" onchange="handleUpload(this,'card')">
+<input type="file" accept="image/*" class="upload-input" id="upload-modal" onchange="handleUpload(this,'modal')">
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── SUBSTITUTIONS ────────────────────────────────────────────────────────────
+const SUBS={"crème fraîche":[{n:"crème liquide",note:"même proportion",tag:"laitier"},{n:"crème d'avoine",note:"plus légère",tag:"végane"}],"crème liquide":[{n:"crème de soja",note:"même proportion",tag:"végane"},{n:"yaourt grec épais",note:"pour les sauces",tag:"laitier"}],"lait de coco":[{n:"crème de soja diluée",note:"1:1 avec de l'eau",tag:"végane"},{n:"bouillon de légumes",note:"pour currys légers",tag:"léger"}],"tofu ferme":[{n:"tempeh",note:"plus ferme, goût de noix",tag:"végane"},{n:"seitan",note:"texture charnue",tag:"végane"},{n:"pois chiches rôtis",note:"pour les salades",tag:"sg"}],"feta":[{n:"fromage de chèvre frais",note:"plus crémeux",tag:"laitier"},{n:"ricotta salée",note:"texture similaire",tag:"laitier"}],"mozzarella":[{n:"fromage végane à pizza",note:"fond bien",tag:"végane"},{n:"burrata",note:"plus crémeuse",tag:"laitier"}],"parmesan":[{n:"levure maltée",note:"même umami, végane",tag:"végane"},{n:"pecorino",note:"plus corsé",tag:"laitier"}],"beurre de cacahuètes":[{n:"beurre d'amande",note:"plus doux",tag:"sans cacahuète"},{n:"tahini",note:"plus neutre",tag:"sg"}],"tahini":[{n:"beurre de sésame grillé",note:"torréfié, même chose",tag:"similaire"},{n:"beurre d'amande",note:"plus sucré",tag:"alternative"}],"sauce soja":[{n:"tamari",note:"sans gluten",tag:"sg"},{n:"aminos de coco",note:"moins salé",tag:"végane"}],"chapelure panko":[{n:"chapelure classique",note:"plus fine",tag:"classique"},{n:"flocons d'avoine mixés",note:"sans gluten",tag:"sg"}],"vin rouge":[{n:"bouillon + vinaigre balsamique",note:"même profondeur",tag:"sans alcool"},{n:"jus de grenade",note:"fruité",tag:"sans alcool"}],"vin blanc":[{n:"bouillon de légumes",note:"neutre",tag:"sans alcool"},{n:"jus de citron dilué",note:"pour l'acidité",tag:"sans alcool"}],"ricotta":[{n:"fromage frais faisselle",note:"plus liquide",tag:"laitier"},{n:"ricotta végane",note:"cajou + citron mixés",tag:"végane"}],"fourme d'ambert":[{n:"roquefort",note:"plus fort",tag:"laitier"},{n:"gorgonzola",note:"plus crémeux",tag:"laitier"}],"gochujang":[{n:"sriracha + miso",note:"1 càc chaque",tag:"fusion"},{n:"harissa",note:"version maghrébine",tag:"alternative"}],"cottage cheese":[{n:"ricotta",note:"plus crémeuse",tag:"laitier"},{n:"fromage blanc",note:"plus liquide",tag:"laitier"}],"lentilles corail":[{n:"lentilles vertes",note:"cuisson plus longue",tag:"classique"},{n:"pois cassés jaunes",note:"texture similaire",tag:"alternative"}]};
+
+// ─── COSTS ────────────────────────────────────────────────────────────────────
+const COSTS={0:{t:8.1,l:"mid"},1:{t:5.1,l:"low"},2:{t:8.9,l:"mid"},3:{t:9.8,l:"high"},4:{t:11.1,l:"mid"},5:{t:8.9,l:"mid"},6:{t:5.5,l:"low"},7:{t:8.1,l:"mid"},8:{t:7.2,l:"mid"},9:{t:6.4,l:"low"},10:{t:5.5,l:"low"},11:{t:4.3,l:"low"},12:{t:6.4,l:"low"},13:{t:6.4,l:"low"},14:{t:6.0,l:"low"},15:{t:8.1,l:"mid"},16:{t:7.2,l:"mid"},17:{t:5.5,l:"low"},18:{t:4.7,l:"low"},19:{t:10.6,l:"high"},20:{t:7.7,l:"mid"},21:{t:6.0,l:"low"},22:{t:6.4,l:"low"},23:{t:6.8,l:"mid"},24:{t:7.2,l:"mid"},25:{t:5.1,l:"low"},26:{t:6.4,l:"low"},27:{t:6.4,l:"low"}};
+
+// ─── EMOJIS ───────────────────────────────────────────────────────────────────
+const EM=["🫕","🥟","🍆","🥗","🫙","🌶","🥘","🍄","🍝","🌮","🧀","🫓","🥦","🫘","🥣","🎃","🫛","🧆","🍳","🍚","🍜","🎃","🥕","🍝","🍜","🍚","🥙","🥖"];
+
+// ─── RECIPES ──────────────────────────────────────────────────────────────────
+const RECIPES=[
+{id:0,name:"Boulette suédoise végé",cat:"Plat principal",link:null,bp:4,cuisine:"🇸🇪 Scandinavie",ingredients:[{n:"champignons de Paris",q:200,u:"g",s:"Boulettes"},{n:"oignon jaune",q:1,u:""},{n:"gousses d'ail",q:3,u:""},{n:"flocons d'avoine",q:3,u:"càs"},{n:"sauce soja",q:2,u:"càs"},{n:"moutarde",q:2,u:"càs"},{n:"paprika fumé",q:1,u:"càc"},{n:"noix de muscade",q:0.5,u:"càc"},{n:"bouillon de légumes",q:300,u:"ml"},{n:"farine",q:3,u:"càs"},{n:"beurre",q:30,u:"g",s:"Sauce"},{n:"crème fraîche",q:50,u:"ml"},{n:"poivre noir",q:1,u:"càc"}],steps:["Hacher finement les champignons, l'oignon et l'ail. Faire chauffer un filet d'huile dans une grande poêle à feu moyen-vif et faire revenir le tout 8 à 10 min jusqu'à ce que toute l'eau soit évaporée et que la préparation soit légèrement dorée. Déglacer avec 1 càs de vin blanc si disponible.","Transférer dans un mixeur avec les flocons d'avoine, la sauce soja, la moutarde, le paprika fumé, la muscade et le bouillon. Mixer par impulsions : on veut une texture homogène mais pas une purée lisse. Ajouter la farine cuillère par cuillère jusqu'à obtenir une masse qui se tient.","Se fariner généreusement les mains. Prélever environ 2 càs de préparation et rouler en boule bien compacte. Disposer sur une plaque farinée. Réserver au frais 15 min si possible — elles tiendront mieux à la cuisson.","SAUCE — Dans une casserole à feu moyen, faire fondre le beurre puis ajouter la farine d'un coup. Fouetter vigoureusement pendant 2 min pour former un roux doré sans grumeaux.","Verser le bouillon chaud progressivement en fouettant sans s'arrêter pour éviter les grumeaux. Incorporer la sauce soja, la moutarde, beaucoup de poivre noir et la crème fraîche. Laisser épaissir à feu doux 5 min. Ajuster l'assaisonnement.","Faire dorer les boulettes dans une poêle huilée à feu moyen 3 min par face. Les réchauffer ensuite directement dans la sauce pendant 5 min pour qu'elles s'imprègnent. Servir avec des pâtes ou de la purée."]},
+{id:1,name:"Dumplings express, bouillon coco/miso",cat:"Entrée / Snack",link:null,bp:2,cuisine:"🌏 Asie",ingredients:[{n:"carotte",q:1,u:""},{n:"champignons de Paris",q:150,u:"g"},{n:"aubergine",q:0.5,u:""},{n:"gousse d'ail",q:1,u:""},{n:"huile de sésame",q:1,u:"càc"},{n:"sauce soja",q:3,u:"càs"},{n:"beurre de cacahuètes",q:1,u:"càs"},{n:"feuilles de riz",q:4,u:""},{n:"crème de coco",q:3,u:"càs"}],steps:["Couper la carotte en très petits dés, les champignons en lamelles fines et l'aubergine en brunoise. Faire revenir l'ail dans un peu d'huile neutre à feu moyen, ajouter les légumes et cuire 8 à 10 min en remuant régulièrement jusqu'à ce qu'ils soient fondants et légèrement caramélisés.","Hors du feu, assaisonner les légumes avec l'huile de sésame, 2 càs de sauce soja et le beurre de cacahuètes. Bien mélanger. Laisser refroidir quelques minutes.","Tremper brièvement les feuilles de riz dans de l'eau tiède 20 secondes — elles doivent être souples mais pas trop molles. Poser sur un torchon humide. Déposer 1 grosse càs de farce au centre. Replier les côtés puis rouler en forme de dumpling bien serré.","Disposer les dumplings sur une plaque légèrement huilée. Enfourner à 190°C pendant 8 min jusqu'à ce qu'ils soient légèrement dorés et croustillants en surface.","Préparer le bouillon : chauffer 250 ml de bouillon de légumes, incorporer la crème de coco et 1 càs de sauce soja. Porter à frémissement, ajuster le sel. Verser dans des bols et ajouter les dumplings chauds. Garnir de graines de sésame et de coriandre fraîche."]},
+{id:2,name:"Katsu aubergine, gremolata basilic/citron",cat:"Plat principal",link:null,bp:2,cuisine:"🇯🇵 Japon",ingredients:[{n:"aubergine",q:1,u:""},{n:"mozzarella",q:125,u:"g"},{n:"œuf",q:1,u:""},{n:"farine",q:3,u:"càs"},{n:"chapelure panko",q:100,u:"g"},{n:"paprika fumé",q:1,u:"càc"},{n:"huile d'olive",q:4,u:"càs"},{n:"gousse d'ail",q:2,u:""},{n:"basilic frais",q:1,u:"bouquet"},{n:"citron",q:1,u:""}],steps:["Couper l'aubergine en tranches épaisses d'environ 1,5 cm dans le sens de la longueur. Saler légèrement les deux faces et laisser dégorger 10 min sur un papier absorbant — cela enlève l'amertume et l'excès d'humidité.","Glisser une tranche de mozzarella entre deux tranches d'aubergine comme un sandwich. Appuyer légèrement pour bien faire adhérer.","Préparer la panure en 3 assiettes : farine assaisonnée de sel/poivre, œuf battu, chapelure panko mélangée avec 1 càc de paprika fumé et une pincée de cumin. Paner soigneusement chaque sandwich aubergine-mozza en appuyant bien sur la chapelure.","Chauffer 3 à 4 càs d'huile dans une grande poêle à feu moyen-vif. Faire dorer les katsu 3 à 4 min par face jusqu'à ce qu'ils soient bien croustillants et dorés. Égoutter sur papier absorbant.","GREMOLATA — Hacher très finement 1 gousse d'ail et les feuilles de basilic frais. Mélanger avec le zeste finement râpé et le jus du citron, des flocons de piment, du sel et 2 à 3 càs d'huile d'olive. La gremolata doit être parfumée et légèrement acidulée.","Napper le fond de l'assiette de sauce tomate chaude, poser le katsu dessus et finir avec une généreuse cuillère de gremolata. Servir immédiatement pour conserver le croustillant."]},
+{id:3,name:"Rösti courge, crème fourme d'Ambert & œuf poché",cat:"Plat principal",link:null,bp:2,cuisine:"🇫🇷 France",ingredients:[{n:"courge delicata",q:0.5,u:""},{n:"pomme de terre",q:1,u:""},{n:"œuf",q:3,u:""},{n:"fécule de maïs",q:5,u:"càs"},{n:"fourme d'Ambert",q:100,u:"g"},{n:"crème liquide",q:120,u:"ml"},{n:"ail confit",q:4,u:"gousses"},{n:"beurre",q:40,u:"g"}],steps:["Râper la courge delicata avec la peau (elle est comestible), la pomme de terre et un oignon sur la grosse râpe. Saler généreusement, mélanger et laisser reposer 5 min. Presser ensuite fortement dans un torchon propre pour extraire le maximum d'eau — c'est l'étape clé pour un rösti croustillant.","Dans un bol, mélanger les légumes pressés avec 1 œuf entier, du thym effeuillé, sel, poivre et 4 à 5 càs de fécule de maïs. L'appareil doit se tenir sans être trop compact.","Dans une grande poêle antiadhésive, faire fondre un beau morceau de beurre à feu moyen. Verser la préparation et aplatir uniformément sur 1,5 cm d'épaisseur. Cuire 7 à 8 min sans toucher — la base doit être bien dorée et croustillante. Retourner délicatement à l'aide d'une assiette et cuire encore 6 à 7 min de l'autre côté.","CRÈME FOURME — Faire suer finement une échalote dans un peu d'huile issue de l'ail confit. Ajouter les gousses d'ail confit écrasées. Incorporer la fourme d'Ambert coupée en morceaux et faire fondre en remuant. Déglacer avec un trait de vin blanc. Verser la crème liquide et laisser mijoter à petit feu 12 à 15 min jusqu'à une consistance nappante. Mixer pour une crème très lisse si désiré.","Pour les œufs pochés : porter une casserole d'eau frémissante à feu doux avec un trait de vinaigre blanc. Casser chaque œuf dans un ramequin. Créer un léger tourbillon dans l'eau puis glisser l'œuf délicatement au centre. Cuire 3 min pour un jaune coulant. Égoutter sur papier absorbant.","Dresser en nappant l'assiette de crème à la fourme, poser le rösti dessus et couronner d'un œuf poché. Finir avec quelques tours de poivre et des herbes fraîches."]},
+{id:4,name:"Lasagnes végétales",cat:"Plat principal",link:"https://www.cookieandkate.com/vegetable-lasagna-recipe/",bp:4,cuisine:"🇮🇹 Italie",ingredients:[{n:"carotte",q:3,u:""},{n:"poivron rouge",q:1,u:""},{n:"courgette",q:2,u:""},{n:"épinards",q:200,u:"g"},{n:"pulpe de tomate",q:800,u:"g"},{n:"gousse d'ail",q:4,u:""},{n:"feuilles lasagne",q:9,u:""},{n:"mozzarella",q:200,u:"g"},{n:"cottage cheese",q:400,u:"g"},{n:"huile d'olive",q:4,u:"càs"}],steps:["Couper les carottes en petits dés, le poivron et les courgettes en morceaux réguliers. Faire chauffer l'huile dans une grande sauteuse à feu moyen. Ajouter les légumes avec une bonne pincée de sel et faire revenir 8 à 12 min en remuant régulièrement jusqu'à légère dorure. Ajouter les épinards par poignées, remuer jusqu'à ce qu'ils tombent complètement, environ 3 min. Retirer du feu et réserver.","SAUCE TOMATE — Égoutter les tomates 1 min dans une passoire. Les placer dans un mixeur avec 2 gousses d'ail, le basilic, 2 càs d'huile d'olive, le sel et des flocons de piment rouge. Mixer par impulsions 8 à 10 fois pour obtenir une sauce épaisse et tartinnable — pas trop lisse.","MÉLANGE FROMAGE — Mixer la moitié du cottage cheese pour le rendre crémeux. Ajouter les légumes cuits et mixer par impulsions 5 à 7 fois pour les hacher grossièrement sans en faire une purée. Verser dans un grand bol, incorporer le reste du cottage cheese, saler et poivrer généreusement.","MONTAGE dans un plat 23x33 cm : étaler ½ tasse de sauce au fond. Poser 3 feuilles de lasagne. Étaler la moitié du mélange fromage-légumes. Verser ¾ tasse de sauce et ½ tasse de mozzarella râpée.","Ajouter 3 nouvelles feuilles. Étaler le reste du mélange fromage-légumes. Ne pas ajouter de sauce à cette couche. Saupoudrer ½ tasse de mozzarella.","Finir avec les 3 dernières feuilles, ¾ tasse de sauce et 1 tasse de mozzarella. Couvrir de papier alu et cuire à 190°C pendant 30 min. Retirer l'alu et cuire encore 20 min jusqu'à ce que le dessus soit bien gratiné. Laisser reposer 10 min avant de couper."]},
+{id:5,name:"Vegetarian Chili",cat:"Plat principal",link:"https://cookieandkate.com/vegetarian-chili-recipe/",bp:4,cuisine:"🇲🇽 Mexique",ingredients:[{n:"oignon rouge",q:1,u:""},{n:"poivron rouge",q:1,u:""},{n:"carotte",q:2,u:""},{n:"gousse d'ail",q:2,u:""},{n:"tomates concassées",q:800,u:"g"},{n:"haricots noirs",q:800,u:"g"},{n:"haricots pinto",q:400,u:"g"},{n:"bouillon de légumes",q:500,u:"ml"},{n:"poudre de chili",q:2,u:"càs"},{n:"cumin",q:2,u:"càc"},{n:"paprika fumé",q:1.5,u:"càc"},{n:"huile d'olive",q:2,u:"càs"}],steps:["Couper le poivron, les carottes et l'oignon en dés réguliers. Chauffer l'huile dans une grande cocotte à feu moyen. Faire revenir les légumes avec ¼ càc de sel pendant 8 à 10 min en remuant de temps en temps jusqu'à ce qu'ils soient tendres et légèrement dorés.","Ajouter l'ail pressé, la poudre de chili, le cumin, le paprika fumé et l'origan. Cuire 1 min en remuant constamment — les épices doivent griller légèrement pour développer leurs arômes.","Ajouter les tomates avec leur jus, les haricots noirs et pinto rincés et égouttés, le bouillon et une feuille de laurier. Mélanger bien et porter à frémissement. Réduire le feu et laisser mijoter à découvert 30 min en remuant de temps en temps — la sauce doit épaissir et concentrer ses saveurs.","Pour une meilleure texture : retirer la feuille de laurier. Prélever environ 1,5 tasse de chili avec un peu de liquide, mixer finement, puis reverser dans la cocotte. Alternativement, passer brièvement le mixeur plongeant ou écraser quelques haricots au presse-purée — cela épaissit naturellement sans perdre en texture.","Ajouter la coriandre hachée fraîche et le vinaigre de cidre selon votre goût. Ajuster le sel et le piment. Le chili est encore meilleur réchauffé le lendemain. Servir avec du riz, du pain de maïs, des dés d'avocat, du yaourt grec ou du fromage râpé."]},
+{id:6,name:"Curry pois chiches & épinards",cat:"Plat principal",link:"https://www.marmiton.org/recettes/recette_curry-de-pois-chiches-aux-epinards_90505.aspx",bp:3,cuisine:"🇮🇳 Inde",ingredients:[{n:"pois chiches",q:500,u:"g"},{n:"épinards",q:200,u:"g"},{n:"pulpe de tomate",q:200,u:"g"},{n:"oignon rouge",q:1,u:""},{n:"lait de coco",q:200,u:"ml"},{n:"pâte de curry",q:4,u:"càc"},{n:"huile d'olive",q:2,u:"càs"}],steps:["Peler et émincer finement l'oignon en demi-rondelles. Si tu utilises des épinards frais, les rincer, enlever les tiges épaisses et les sécher dans un torchon. Pour des surgelés, les sortir du congélateur 10 min avant.","Chauffer l'huile dans une sauteuse profonde à feu vif. Faire revenir l'oignon 1 à 2 min en remuant constamment — il doit ramollir sans brûler.","Ajouter la pulpe de tomate, la pâte de curry et les épinards (si surgelés directement). Saler, bien mélanger, couvrir et cuire 3 min à feu doux. Si épinards frais, les ajouter maintenant par poignées et laisser tomber 2 min.","Ajouter les pois chiches égouttés et rincés, puis verser le lait de coco. Mélanger délicatement pour ne pas écraser les pois chiches. Cuire à découvert 3 à 4 min à feu doux jusqu'à ce que la sauce soit bien enrobante.","Goûter et ajuster : plus de curry pour plus de caractère, un filet de citron pour l'acidité, sel. Servir sur du riz basmati avec quelques feuilles de coriandre fraîche et une tranche de citron."]},
+{id:7,name:"Bourguignon de champignons",cat:"Plat principal",link:"https://www.750g.com/bourguignon-de-champignons-r206739.htm",bp:4,cuisine:"🇫🇷 France",ingredients:[{n:"champignons de Paris",q:1000,u:"g"},{n:"carotte",q:1,u:""},{n:"gousse d'ail",q:2,u:""},{n:"farine",q:2,u:"càs"},{n:"vin rouge",q:250,u:"ml"},{n:"concentré de tomates",q:2,u:"càs"},{n:"bouillon de légumes",q:500,u:"ml"},{n:"huile d'olive",q:2,u:"càs"}],steps:["Brosser délicatement les champignons sous un filet d'eau froide et les couper en quartiers. Éplucher la carotte, la couper en bâtonnets puis en petits biseaux d'1 cm. Peler, dégermer et hacher finement l'ail.","Faire chauffer l'huile dans une grande cocotte à feu vif jusqu'à ce qu'elle frémisse. Faire suer l'ail 1 min puis ajouter les champignons en une seule couche si possible. Cuire à feu vif 8 à 10 min sans trop remuer pour qu'ils dorent et rendent leur eau de végétation — c'est crucial pour la saveur.","Ajouter les carottes et le concentré de tomates. Mélanger et cuire 5 min à feu moyen en remuant pour caraméliser légèrement.","Saupoudrer les légumes de farine, quatre-épices, sel et poivre. Mélanger et laisser torréfier 2 à 3 min pour cuire la farine — elle ne doit plus sentir le cru.","Verser le vin rouge d'un coup et gratter les sucs de cuisson au fond avec une spatule. Ajouter le bouillon chaud et le bouquet garni. Couvrir et laisser mijoter à feu très doux 35 à 45 min jusqu'à ce que les carottes soient tendres à la pointe d'un couteau. Vérifier et ajuster l'assaisonnement.","Retirer le bouquet garni. Servir bien chaud sur une purée maison généreuse ou des tagliatelles fraîches. Parsemer de persil plat haché."]},
+{id:8,name:"Cannellonis ricotta & épinards",cat:"Plat principal",link:null,bp:3,cuisine:"🇮🇹 Italie",ingredients:[{n:"pâtes à cannelloni",q:12,u:""},{n:"ricotta",q:250,u:"g"},{n:"épinards",q:200,u:"g"},{n:"gousse d'ail",q:2,u:""},{n:"parmesan",q:50,u:"g"},{n:"pulpe de tomate",q:400,u:"g"},{n:"huile d'olive",q:2,u:"càs"}],steps:["Préparer la sauce tomate : faire revenir 1 gousse d'ail dans l'huile d'olive 1 min, ajouter la pulpe de tomate, saler, poivrer et cuire 15 min à feu doux jusqu'à réduction. Ajouter du basilic en fin de cuisson.","Faire revenir 1 gousse d'ail pressée dans un peu d'huile d'olive avec une bonne pincée de noix de muscade râpée. Ajouter les épinards frais par poignées à feu moyen en remuant rapidement. Ils tombent en 2 à 3 min — ne pas trop cuire pour conserver la couleur verte et la texture. Saler et poivrer.","Déposer les épinards sur une planche et hacher grossièrement au couteau. Les essorer légèrement dans les mains pour enlever l'excès d'eau. Mélanger intimement avec la ricotta, la moitié du parmesan, sel, poivre et muscade. Goûter et rectifier.","Préchauffer le four à 180°C. Garnir les cannelloni crus à l'aide d'une poche à douille ou d'une petite cuillère — prendre le temps de bien les remplir sans les casser. Disposer côte à côte dans un plat à four légèrement huilé.","Verser la sauce tomate généreusement sur les cannelloni pour les couvrir complètement — c'est elle qui les fera cuire à la vapeur. Saupoudrer du reste de parmesan. Couvrir de papier alu et cuire 20 min, puis retirer l'alu et gratiner 8 à 10 min jusqu'à dorure. Servir immédiatement."]},
+{id:9,name:"Tacos chou-fleur épicé, avocat & feta",cat:"Plat principal",link:null,bp:2,cuisine:"🇲🇽 Mexique",ingredients:[{n:"chou-fleur",q:0.5,u:""},{n:"avocat",q:1,u:""},{n:"feta",q:50,u:"g"},{n:"riz",q:150,u:"g"},{n:"tortillas",q:4,u:""},{n:"mayonnaise",q:2,u:"càs"},{n:"citron vert",q:1,u:""},{n:"épices mexicaines",q:1,u:"càc"}],steps:["Cuire le riz dans une casserole d'eau bouillante salée avec ½ càc de cumin pendant 12 à 14 min. Égoutter et garder couvert avec un torchon pour qu'il reste moelleux.","Préparer la mayo cumin : mélanger la mayonnaise avec le zeste finement râpé du citron vert et ½ càc de cumin. Réserver au frais.","Couper le chou-fleur en petites fleurettes régulières. Faire revenir l'oignon et l'ail coupés en deux dans un filet d'huile 5 min à feu moyen. Ajouter le chou-fleur et 1 càc d'épices mexicaines par personne. Couvrir 5 min à feu doux puis ôter le couvercle et cuire encore 3 à 5 min à feu vif pour faire dorer et évaporer l'eau résiduelle. Retirer l'ail, saler et presser le jus d'un quartier de citron vert.","Couper l'avocat en tranches régulières, arroser d'un filet de citron vert pour éviter l'oxydation. Émietter la feta en morceaux rustiques.","Chauffer les tortillas 30 secondes par face dans une poêle sèche ou directement sur la flamme du gaz pour les marquer légèrement. Les garder empilées sous un torchon chaud. Tartiner chaque tortilla de mayo cumin, garnir de chou-fleur épicé, de tranches d'avocat et de feta émiettée. Servir avec le riz assaisonné de coriandre, d'un filet d'huile d'olive et de sel."]},
+{id:10,name:"Croque monsieur champignons & comté",cat:"Entrée / Snack",link:null,bp:2,cuisine:"🇫🇷 France",ingredients:[{n:"pain de mie",q:4,u:"tranches"},{n:"champignons de Paris",q:150,u:"g"},{n:"comté",q:60,u:"g"},{n:"gruyère râpé",q:40,u:"g"},{n:"beurre",q:20,u:"g"},{n:"farine",q:2,u:"càs"},{n:"lait",q:200,u:"ml"},{n:"gousse d'ail",q:1,u:""},{n:"roquette",q:30,u:"g"}],steps:["Préparer la béchamel : faire fondre le beurre à feu moyen, ajouter la farine et fouetter 1 min pour former un roux blond. Verser le lait chaud progressivement sans cesser de fouetter. Cuire 3 à 4 min jusqu'à épaississement. Saler, poivrer, muscade. Réserver.","Couper les champignons en lamelles fines. Chauffer un filet d'huile dans une poêle à feu moyen-vif. Ajouter les champignons en une seule couche, laisser dorer 3 à 4 min sans remuer puis mélanger. Ajouter l'ail râpé, saler, poivrer et cuire encore 3 min. Ils doivent être bien dorés et sans eau résiduelle.","Préchauffer le four à 200°C ou un gril. Sur une plaque, disposer 2 tranches de pain. Napper chacune d'une bonne couche de béchamel (environ 2 càs). Répartir les champignons poêlés, puis les tranches de comté et le gruyère râpé.","Recouvrir des 2 autres tranches de pain. Napper généreusement le dessus de béchamel et saupoudrer du reste de gruyère râpé. Enfourner 10 à 12 min jusqu'à ce que le dessus soit gratiné et bouillonnant, ou passer 5 min sous le gril en surveillant.","À la sortie du four, glisser quelques feuilles de roquette fraîche entre les tranches ou les disposer par-dessus. La roquette apporte une note poivrée et de la fraîcheur qui contrebalance le fromage fondu. Servir immédiatement."]},
+{id:11,name:"Wrap houmous & poivron grillé",cat:"Entrée / Snack",link:null,bp:2,cuisine:"🌍 Moyen-Orient",ingredients:[{n:"wraps / tortillas",q:2,u:""},{n:"houmous",q:100,u:"g"},{n:"poivron rouge",q:1,u:""},{n:"concombre",q:0.5,u:""},{n:"feta",q:40,u:"g"},{n:"huile d'olive",q:1,u:"càs"}],steps:["Rôtir le poivron entier directement sur la flamme d'un brûleur à gaz (tourner régulièrement) ou au four à 220°C en position gril pendant 20 min en le retournant à mi-cuisson. La peau doit être uniformément noircie et cloquée.","Placer le poivron rôti dans un bol, couvrir hermétiquement de film alimentaire et laisser reposer 10 min — la vapeur va décoller la peau. Peler entièrement, enlever le pédoncule et les graines. Couper en lanières larges. Ne pas rincer sous l'eau pour conserver les sucs de cuisson.","Couper le demi-concombre en fines rondelles ou en bâtonnets. Émietter la feta à la fourchette en morceaux irréguliers. Ciseler les herbes fraîches si disponibles.","Tartiner généreusement chaque wrap de houmous jusqu'à 2 cm du bord. Disposer les lanières de poivron en éventail au centre, puis le concombre, la feta émiettée et les herbes. Assaisonner d'un filet d'huile d'olive, sel, poivre.","Rouler le wrap très serré en partant du bas, en repliant les côtés au fur et à mesure comme un burrito. Couper en diagonale avec un couteau bien aiguisé pour une belle présentation. Servir immédiatement ou emballer dans du papier sulfurisé pour le transport."]},
+{id:12,name:"Steak chou-fleur, chimichurri & haricots blancs",cat:"Plat principal",link:null,bp:2,cuisine:"🌎 Amérique du Sud",ingredients:[{n:"chou-fleur",q:1,u:""},{n:"haricots blancs",q:400,u:"g"},{n:"persil plat",q:1,u:"bouquet"},{n:"gousse d'ail",q:3,u:""},{n:"citron",q:1,u:""},{n:"huile d'olive",q:5,u:"càs"},{n:"paprika fumé",q:1,u:"càc"}],steps:["Retirer les feuilles extérieures du chou-fleur. Couper 2 belles tranches épaisses de 2 cm en passant par le centre de la tête — les fleurettes restent reliées par le trognon. Garder les chutes pour une autre utilisation. Badigeonner généreusement les deux faces avec un mélange huile d'olive + paprika fumé + sel + poivre.","Cuire les steaks de chou-fleur au four à 200°C sur une plaque huilée, 25 à 30 min en retournant à mi-cuisson. Ils doivent être tendres à cœur et bien colorés en surface. Pour plus de saveur, terminer 2 min sous le gril.","CHIMICHURRI — Hacher très finement le persil plat, 2 gousses d'ail et quelques feuilles de menthe si disponible. Mélanger avec 1 càs de vinaigre de vin rouge, du piment rouge émietté, 3 càs d'huile d'olive et une bonne pincée de sel. La sauce doit être verte, huileuse et parfumée. Laisser reposer 10 min minimum pour que les saveurs se mélangent.","PURÉE DE HARICOTS — Égoutter et rincer les haricots. Les mixer avec 1 gousse d'ail, le jus du citron, 2 càs d'huile d'olive, sel et poivre jusqu'à obtenir une purée lisse et onctueuse. Ajouter un peu d'eau si nécessaire pour la consistance.","Dresser en déposant une belle cuillère de purée de haricots au centre de l'assiette. Poser le steak de chou-fleur par-dessus. Napper généreusement de chimichurri. Servir avec une salade verte ou des tomates cerises."]},
+{id:13,name:"Parmentier lentilles & champignons",cat:"Plat principal",link:null,bp:4,cuisine:"🇫🇷 France",ingredients:[{n:"lentilles vertes",q:200,u:"g"},{n:"champignons de Paris",q:300,u:"g"},{n:"oignon",q:1,u:""},{n:"gousse d'ail",q:2,u:""},{n:"pomme de terre",q:800,u:"g"},{n:"beurre",q:50,u:"g"},{n:"lait",q:150,u:"ml"},{n:"sauce soja",q:2,u:"càs"},{n:"concentré de tomates",q:1,u:"càs"}],steps:["Rincer les lentilles sous l'eau froide. Les cuire dans une grande casserole d'eau froide non salée avec 1 brin de thym et 1 feuille de laurier. Porter à ébullition puis réduire le feu et laisser mijoter 20 à 25 min. Les lentilles doivent être cuites mais encore un peu fermes. Saler en fin de cuisson, égoutter et retirer le thym et le laurier.","Couper les champignons en lamelles. Émincer finement l'oignon et hacher l'ail. Dans une grande poêle à feu vif, faire revenir l'oignon 3 min puis les champignons. Cuire 8 à 10 min à feu moyen-vif sans trop remuer pour les faire dorer. Ajouter l'ail, la sauce soja et le concentré de tomates. Bien mélanger et cuire encore 3 min.","Incorporer les lentilles égouttées au mélange champignons. Assaisonner généreusement en sel, poivre et thym. La garniture doit être bien parfumée et légèrement humide.","PURÉE — Cuire les pommes de terre (pelées et coupées en morceaux) 20 min dans de l'eau bouillante salée. Égoutter et sécher 1 min dans la casserole sur le feu. Écraser au presse-purée en incorporant le beurre froid en morceaux puis le lait chaud. Saler, poivrer et muscader. La purée doit être crémeuse et sans grumeaux.","Dans un plat à gratin beurré, étaler la garniture lentilles-champignons en couche régulière. Recouvrir de purée en lissant à la spatule ou en créant des sillons à la fourchette pour une belle surface dorée. Saupoudrer de fromage râpé si désiré. Enfourner à 200°C pendant 20 à 25 min jusqu'à gratinage. Servir bien chaud."]},
+{id:14,name:"Dahl lentilles corail, lait de coco & œuf mollet",cat:"Plat principal",link:"https://www.marmiton.org/recettes/recette_dahl-de-lentilles-corail_35497.aspx",bp:4,cuisine:"🇮🇳 Inde",ingredients:[{n:"lentilles corail",q:250,u:"g"},{n:"lait de coco",q:400,u:"ml"},{n:"bouillon de légumes",q:400,u:"ml"},{n:"oignon",q:1,u:""},{n:"gousse d'ail",q:3,u:""},{n:"tomates concassées",q:200,u:"g"},{n:"curry en poudre",q:2,u:"càc"},{n:"curcuma",q:1,u:"càc"},{n:"œuf",q:4,u:""}],steps:["Émincer finement l'oignon. Râper le  sur une râpe fine. Écraser les gousses d'ail. Rincer les lentilles corail à l'eau froide jusqu'à ce que l'eau soit claire.","Dans une grande casserole, faire chauffer un filet d'huile à feu moyen. Faire revenir l'oignon 5 min jusqu'à ce qu'il soit translucide. Ajouter l'ail et, cuire 1 min en remuant. Ajouter le curry, le curcuma et le cumin, mélanger 1 min supplémentaire — les épices doivent griller légèrement pour développer tout leur arôme.","Ajouter les lentilles rincées, les tomates concassées, le lait de coco et le bouillon. Porter à ébullition en remuant, puis réduire le feu à minimum. Cuire à découvert 18 à 22 min en remuant régulièrement — les lentilles corail fondent et épaississent naturellement la sauce. La consistance finale doit être crémeuse et nappante.","ŒUFS MOLLETS — Porter une casserole d'eau à ébullition franche. Avec une cuillère, plonger délicatement les œufs dans l'eau bouillante. Cuire exactement 6 min pour un blanc pris et un jaune coulant. Préparer un grand bol d'eau glacée. Transférer immédiatement les œufs dans l'eau froide et laisser refroidir 2 min minimum. Écaler délicatement sous un filet d'eau froide en faisant rouler l'œuf dans la paume pour fissurer la coquille uniformément.","Assaisonner le dahl en sel et piment. Pour une belle présentation : servir le dahl dans des assiettes creuses chaudes, couper les œufs mollets en deux et poser au centre. Saupoudrer de cumin en grains torréfiés, de coriandre fraîche et d'un filet d'huile de coco ou d'olive. Servir avec du riz ou du pain naan."]},
+{id:15,name:"Crumble butternut & chèvre",cat:"Plat principal",link:null,bp:3,cuisine:"🇫🇷 France",ingredients:[{n:"courge butternut",q:1,u:""},{n:"chèvre frais",q:150,u:"g"},{n:"oignon rouge",q:1,u:""},{n:"farine",q:80,u:"g"},{n:"beurre",q:60,u:"g"},{n:"flocons d'avoine",q:40,u:"g"},{n:"parmesan",q:30,u:"g"},{n:"huile d'olive",q:2,u:"càs"}],steps:["Préchauffer le four à 200°C. Peler le butternut, retirer les graines et couper en cubes de 2 cm. Émincer l'oignon rouge en lamelles. Disposer sur une plaque, arroser d'huile d'olive, saler, poivrer et ajouter du thym. Rôtir 25 à 30 min en mélangeant à mi-cuisson — les cubes doivent être fondants et légèrement caramélisés.","Transférer les légumes rôtis dans un plat à gratin beurré. Émietter le chèvre frais par-dessus en morceaux généreux et irréguliers. Le chèvre va fondre et se mélanger aux légumes pendant la cuisson.","CRUMBLE — Sortir le beurre du réfrigérateur quelques minutes avant. Dans un bol, mélanger la farine, les flocons d'avoine, le parmesan râpé, le sel et le romarin frais haché. Ajouter le beurre froid coupé en petits dés. Travailler du bout des doigts en pinçant et en frottant jusqu'à obtenir une texture sableuse et grumeleuse — il doit rester des morceaux. Ne pas trop travailler.","Répartir le crumble uniformément sur les légumes en couche régulière sans tasser. Il doit former une croûte généreuse.","Baisser le four à 190°C et enfourner 18 à 22 min jusqu'à ce que le crumble soit bien doré et croustillant. Laisser reposer 5 min avant de servir. Accompagner d'une salade verte avec une vinaigrette moutardée."]},
+{id:16,name:"Boulettes lentilles 'butter chicken' & potimarron",cat:"Plat principal",link:null,bp:3,cuisine:"🇮🇳 Inde",ingredients:[{n:"lentilles vertes",q:200,u:"g"},{n:"potimarron",q:0.5,u:""},{n:"tomates concassées",q:400,u:"g"},{n:"crème fraîche",q:150,u:"ml"},{n:"oignon",q:2,u:""},{n:"gousse d'ail",q:4,u:""},{n:"garam masala",q:2,u:"càs"},{n:"beurre",q:20,u:"g"}],steps:["BOULETTES — Cuire les lentilles 20 min, bien égoutter et laisser sécher à l'air 5 min. Mixer avec la moitié de l'oignon haché, 2 gousses d'ail, 1 càs de garam masala, sel et poivre. La texture doit être homogène mais pas complètement lisse. Ajouter 2 càs de farine si la préparation est trop humide. Former des boulettes de la taille d'une noix, rouler dans la farine.","Faire dorer les boulettes dans une poêle huilée à feu moyen 3 à 4 min par face en les faisant tourner régulièrement. Elles doivent être bien dorées sur tout le tour. Réserver sur papier absorbant.","SAUCE BUTTER CHICKEN — Dans la même poêle, faire revenir le reste de l'oignon dans le beurre 5 min. Ajouter l'ail et  râpé, cuire 1 min. Incorporer 1 càs de garam masala, cumin, paprika et une pincée de curcuma — torréfier 30 secondes.","Ajouter les tomates concassées, mélanger et laisser mijoter 10 min à feu moyen pour réduire. Verser la crème fraîche, réduire le feu au minimum et cuire encore 5 min. La sauce doit être veloutée, orangée et bien parfumée. Ajuster le sel et le piment.","Plonger les boulettes dans la sauce chaude et laisser mijoter doucement 5 à 8 min pour qu'elles s'imprègnent. POTIMARRON — Couper en quartiers sans peler (la peau est comestible), disposer sur une plaque avec de l'ail en chemise, du thym et de l'huile. Rôtir à 200°C, 30 min jusqu'à caramélisation. Servir avec du riz basmati."]},
+{id:17,name:"Falafel pita, sauce yaourt & pickles",cat:"Entrée / Snack",link:"https://www.cuisine-libre.org/falafel",bp:2,cuisine:"🌍 Moyen-Orient",ingredients:[{n:"pois chiches secs",q:400,u:"g"},{n:"oignon",q:0.5,u:""},{n:"gousse d'ail",q:2,u:""},{n:"persil plat",q:0.5,u:"bouquet"},{n:"yaourt grec",q:150,u:"g"},{n:"citron",q:1,u:""},{n:"pains pita",q:4,u:""},{n:"concombre",q:0.5,u:""}],steps:["La veille : faire tremper les pois chiches secs 12 h minimum dans beaucoup d'eau froide. Ils doublent de volume. Égoutter et rincer — NE PAS CUIRE : les pois chiches crus trempés donnent des falafels qui tiennent, alors que les pois chiches cuits donnent une pâte qui se défait.","FALAFELS — Mixer les pois chiches égouttés (crus) avec l'oignon, l'ail, le persil, la coriandre, le cumin, 1 càc de coriandre moulue, du sel et du poivre. Mixer par impulsions jusqu'à une texture grossière et graineuse — pas une purée lisse. Si la préparation est trop humide, ajouter 1 à 2 càs de farine. Réfrigérer au moins 30 min.","Former des boules de la taille d'une noix en pressant bien dans la paume. Frire par petites quantités dans une huile chauffée à 180°C pendant 3 à 4 min en les retournant à mi-cuisson. Alternativement, disposer sur une plaque huilée et cuire au four à 200°C, 20 à 25 min en retournant à mi-cuisson.","PICKLES EXPRESS — Couper le concombre et l'oignon rouge en julienne fine. Placer dans un bol, couvrir de vinaigre de riz ou blanc avec 1 càc de sucre et ½ càc de sel. Mélanger et laisser macérer minimum 20 min à température ambiante. Ils se conservent 3 jours au frigo.","SAUCE YAOURT — Mélanger le yaourt grec avec l'ail pressé, le jus du citron, 1 càc de tahini si disponible, sel et poivre. Ouvrir les pitas en poche, les passer 30 sec dans une poêle sèche pour les tiédir. Garnir généreusement de sauce yaourt, falafels, pickles, tomates en dés et salade."]},
+{id:18,name:"Nasi Goreng végétarien",cat:"Plat principal",link:"https://www.196flavors.com/fr/indonesie-nasi-goreng/",bp:2,cuisine:"🇮🇩 Asie",ingredients:[{n:"riz",q:400,u:"g"},{n:"carotte",q:1,u:""},{n:"œuf",q:2,u:""},{n:"sauce soja",q:3,u:"càs"},{n:"concentré de tomates",q:1,u:"càc"},{n:"gousse d'ail",q:2,u:""},{n:"échalote",q:1,u:""}],steps:["Le secret du nasi goreng : utiliser du riz cuit de la veille, refroidi et égrainé. Le riz frais est trop humide et colle. Si tu ne peux pas préparer à l'avance, étale le riz cuit sur une plaque et place au réfrigérateur 1 h minimum.","Émincer finement l'échalote et l'ail. Couper la carotte en très petits dés. Préparer la sauce : mélanger la sauce soja sucrée (ou sauce soja + 1 càc de miel), le concentré de tomates et une pointe de piment. Réserver.","Chauffer un wok ou une grande poêle à feu très vif jusqu'à ce qu'elle fume. Ajouter de l'huile neutre, faire revenir l'échalote et l'ail 1 à 2 min en remuant sans cesse. Ajouter la carotte en dés, cuire 3 min.","Pousser les légumes sur les côtés du wok. Casser les œufs directement au centre de la poêle bien chaude et brouiller rapidement avec une spatule. Avant qu'ils soient complètement pris, incorporer les légumes en mélangeant tout.","Ajouter le riz froid en l'émiettant avec les mains. Faire sauter à feu très vif 3 à 4 min en mélangeant énergiquement — chaque grain doit être enrobé et légèrement grillé. Verser la sauce, mélanger vigoureusement 1 min. Servir aussitôt garni d'oignons frits, de rondelles de concombre et de tomates cerises."]},
+{id:19,name:"Risotto champignons, poireaux & fourme d'Ambert",cat:"Plat principal",link:null,bp:3,cuisine:"🇫🇷 France",ingredients:[{n:"riz arborio",q:300,u:"g"},{n:"champignons de Paris",q:300,u:"g"},{n:"poireau",q:2,u:""},{n:"oignon",q:1,u:""},{n:"gousse d'ail",q:2,u:""},{n:"vin blanc",q:100,u:"ml"},{n:"bouillon de légumes",q:1000,u:"ml"},{n:"fourme d'Ambert",q:80,u:"g"},{n:"beurre",q:30,u:"g"},{n:"parmesan",q:40,u:"g"}],steps:["Maintenir le bouillon de légumes chaud dans une casserole à feu très doux — l'ajouter froid casserait la cuisson du risotto. Émincer finement l'oignon et l'ail. Couper les poireaux en rondelles fines (blanc et vert tendre). Lameller les champignons.","Dans une grande casserole à fond épais, faire revenir l'oignon dans la moitié du beurre à feu moyen 3 à 4 min sans coloration. Ajouter l'ail, puis le riz. Nacrer 2 min en remuant : chaque grain doit devenir translucide avec un cœur blanc — c'est ce qui garantit la texture crémeuse finale.","Déglacer avec le vin blanc en une seule fois et mélanger jusqu'à absorption complète. Puis ajouter le bouillon chaud une louche à la fois, en attendant que chaque louche soit absorbée avant d'ajouter la suivante. Maintenir un feu moyen et remuer régulièrement pendant 18 à 20 min. Le risotto est cuit quand le riz est al dente avec une texture fluide et crémeuse.","Pendant la cuisson du risotto : dans une poêle séparée à feu vif, faire sauter les champignons dans un peu de beurre 5 à 7 min jusqu'à belle coloration. Réserver. Dans la même poêle, faire fondre les poireaux 5 min à feu moyen avec un peu d'huile et de sel. Réserver.","Hors du feu, incorporer champignons, poireaux et la fourme d'Ambert coupée en petits morceaux au risotto. Ajouter le reste du beurre froid en petits dés et le parmesan. Mélanger énergiquement (mantecatura) pour émulsionner et créer une texture soyeuse. Couvrir 2 min, poivrer généreusement et servir immédiatement dans des assiettes creuses chaudes."]},
+{id:20,name:"Udon beurre de cacahuète & tofu grillé",cat:"Plat principal",link:null,bp:2,cuisine:"🇯🇵 Japon",ingredients:[{n:"nouilles udon",q:400,u:"g"},{n:"tofu ferme",q:250,u:"g"},{n:"beurre de cacahuètes",q:2,u:"càs"},{n:"sauce soja",q:2,u:"càs"},{n:"sirop d'érable",q:1,u:"càs"},{n:"graines de sésame",q:1,u:"càs"}],steps:["Égoutter le tofu ferme et le presser entre deux feuilles de papier absorbant en posant un poids dessus 10 min — c'est la clé pour qu'il dore correctement. Couper en dés de 2 cm.","Dans une poêle antiadhésive bien chaude, faire chauffer un filet d'huile neutre à feu vif. Ajouter les dés de tofu en une seule couche sans les tasser. Ne pas toucher pendant 3 min — laisser former une croûte dorée. Retourner et cuire 3 min de l'autre côté. Saler et poivrer à mi-cuisson. Le tofu doit être doré et légèrement croustillant sur toutes les faces. Réserver.","Cuire les udon selon les indications du paquet (généralement 2 à 3 min dans l'eau bouillante). Récupérer 4 à 5 càs d'eau de cuisson avant d'égoutter.","SAUCE — Dans un grand bol, fouetter le beurre de cacahuètes avec la sauce soja, le sirop d'érable et les épices. Ajouter l'eau de cuisson des udon cuillère par cuillère en fouettant jusqu'à obtenir une sauce lisse, crémeuse et de la consistance d'une crème anglaise.","Verser les udon chauds dans la sauce et mélanger immédiatement pour bien les enrober. Ajouter le tofu grillé délicatement. Dresser dans des bols, garnir de graines de sésame grillées, de vert de poireau très finement émincé et d'un filet d'huile de sésame."]},
+{id:21,name:"Curry de courge 'katsu style'",cat:"Plat principal",link:null,bp:2,cuisine:"🇯🇵 Japon",ingredients:[{n:"courge butternut",q:0.5,u:""},{n:"riz",q:200,u:"g"},{n:"beurre",q:30,u:"g"},{n:"farine",q:30,u:"g"},{n:"bouillon de légumes",q:500,u:"ml"},{n:"curry en poudre",q:2,u:"càs"},{n:"sauce soja",q:1,u:"càs"}],steps:["Préchauffer le four à 200°C. Peler le butternut et couper en gros cubes réguliers de 3 cm. Disposer sur une plaque huilée, arroser d'huile d'olive, saler et poivrer. Rôtir 25 à 30 min en mélangeant à mi-cuisson jusqu'à ce que les cubes soient tendres à cœur et légèrement caramélisés en surface.","Préparer le riz pendant la cuisson du butternut : le rincer jusqu'à eau claire, puis cuire selon les indications du paquet dans de l'eau bouillante salée.","SAUCE ROUX — Dans une casserole à feu moyen, faire fondre le beurre complètement. Ajouter la farine d'un coup et fouetter immédiatement pendant 2 min jusqu'à obtenir un roux doré et odorant (il ne doit plus sentir la farine crue).","Verser le bouillon de légumes chaud progressivement en fouettant vigoureusement pour éviter les grumeaux. Incorporer le curry en poudre, 1 càc de miel et la sauce soja. Laisser épaissir à feu doux 8 à 10 min en remuant régulièrement — la sauce doit avoir la consistance d'une crème anglaise épaisse.","Goûter et ajuster : plus de curry pour plus de caractère, sel, piment. Ajouter les cubes de courge rôtis dans la sauce et laisser mijoter 3 min pour qu'ils s'imprègnent. Servir sur un bol de riz avec des graines de sésame et de l'oignon vert."]},
+{id:22,name:"Patate douce rôtie, pois chiches & tahini",cat:"Plat principal",link:"https://cookieandkate.com/sweet-potato-buddha-bowl/",bp:2,cuisine:"🌍 Moyen-Orient",ingredients:[{n:"patate douce",q:2,u:""},{n:"pois chiches",q:400,u:"g"},{n:"tahini",q:3,u:"càs"},{n:"citron",q:1,u:""},{n:"gousse d'ail",q:1,u:""},{n:"paprika fumé",q:1,u:"càc"},{n:"pignons de pin",q:20,u:"g"},{n:"huile d'olive",q:2,u:"càs"}],steps:["Préchauffer le four à 200°C. Brosser les patates douces sous l'eau. Couper en deux dans le sens de la longueur sans peler — la peau croustille et concentre les sucres. Entailler la chair en losanges sans atteindre la peau. Badigeonner d'huile d'olive, saler. Placer chair vers le bas sur une plaque. Rôtir 35 à 40 min jusqu'à ce qu'elles soient fondantes et que la peau soit légèrement croustillante.","Pendant ce temps, égoutter et rincer les pois chiches. Les sécher soigneusement dans un torchon — c'est crucial pour le croustillant. Mélanger avec le paprika fumé, l'huile d'olive et une bonne pincée de sel. Étaler en couche unique sur une plaque et rôtir au four 20 à 25 min (avec les patates si la plaque est assez grande) jusqu'à ce qu'ils soient dorés et légèrement croustillants.","SAUCE TAHINI — Fouetter dans un bol : le tahini, le jus du citron, l'ail pressé et une pincée de sel. La préparation va d'abord épaissir et pâlir — c'est normal. Ajouter de l'eau froide cuillère par cuillère en fouettant jusqu'à obtenir une sauce fluide, crémeuse et de la consistance d'une vinaigrette épaisse.","Faire dorer les pignons de pin à sec dans une petite poêle à feu moyen 2 à 3 min en remuant sans cesse — ils brûlent très vite. Réserver.","Dresser : poser la patate douce rôtie dans l'assiette, disperser les pois chiches croustillants sur et autour, arroser généreusement de sauce tahini. Garnir de pignons grillés, de persil ou de coriandre hachée et d'un peu de paprika."]},
+{id:23,name:"Pâtes crème de poivrons rôtis & feta",cat:"Plat principal",link:null,bp:3,cuisine:"🇮🇹 Italie",ingredients:[{n:"pâtes",q:400,u:"g"},{n:"poivron rouge",q:2,u:""},{n:"feta",q:100,u:"g"},{n:"gousse d'ail",q:2,u:""},{n:"crème liquide",q:100,u:"ml"},{n:"huile d'olive",q:2,u:"càs"},{n:"basilic frais",q:0.5,u:"bouquet"}],steps:["Rôtir les poivrons entiers directement sur la grille du four à 220°C en position gril, 25 à 30 min en les retournant toutes les 8 min, jusqu'à ce que la peau soit uniformément noircie. Placer dans un bol, couvrir hermétiquement de film plastique et laisser reposer 15 min.","Peler les poivrons refroidis (la peau se détache facilement), retirer le pédoncule et les graines. Ne pas rincer — les sucs de cuisson sont précieux pour la saveur.","Mixer les poivrons avec les gousses d'ail, la crème liquide, l'huile d'olive, du sel et du poivre jusqu'à obtenir une sauce très lisse et veloutée. Goûter et rectifier — elle doit être légèrement sucrée, fumée et crémeuse.","Cuire les pâtes dans une grande casserole d'eau bouillante généreusement salée jusqu'à al dente (1 min de moins que le temps indiqué). Récupérer une tasse d'eau de cuisson avant d'égoutter.","Verser la sauce poivron dans la casserole à feu doux. Ajouter les pâtes égouttées et mélanger en ajoutant l'eau de cuisson cuillère par cuillère pour ajuster la consistance — la sauce doit enrober chaque pâte. Émietter la feta en gros morceaux par-dessus. Finir avec les feuilles de basilic frais et un filet d'huile d'olive."]},
+{id:24,name:"Pad Thai tofu & cacahuètes",cat:"Plat principal",link:"https://www.196flavors.com/fr/thailande-pad-thai/",bp:2,cuisine:"🇹🇭 Thaïlande",ingredients:[{n:"nouilles de riz",q:200,u:"g"},{n:"tofu ferme",q:200,u:"g"},{n:"œuf",q:2,u:""},{n:"sauce soja",q:3,u:"càs"},{n:"germes de soja",q:100,u:"g"},{n:"cacahuètes",q:40,u:"g"},{n:"citron vert",q:1,u:""}],steps:["Tremper les nouilles de riz dans de l'eau à température ambiante pendant 20 à 30 min jusqu'à ce qu'elles soient souples mais encore légèrement fermes — elles finiront de cuire dans le wok. Égoutter.","SAUCE PAD THAI — Mélanger dans un bol : 2 càs de sauce soja, 1 càs de ketchup (ou sauce poisson végane), 1 càs de cassonade, 1 càs de jus de citron vert. Réserver.","Presser et sécher le tofu, couper en cubes de 2 cm. Faire dorer dans un wok huilé à feu très vif 4 à 5 min sur toutes les faces. Pousser sur les côtés.","Ajouter les nouilles égouttées dans le wok. Verser la sauce et mélanger énergiquement à feu vif pendant 2 min pour que les nouilles s'imprègnent. Pousser sur les côtés. Casser les œufs dans le centre vide, brouiller rapidement, puis incorporer avant qu'ils soient complètement pris.","Ajouter les germes de soja crus, mélanger 30 secondes pour juste les réchauffer — ils doivent rester croquants. Dresser dans des bols, garnir de cacahuètes grossièrement concassées, d'oignon vert émincé, de piment et de quartiers de citron vert."]},
+{id:25,name:"Bowl bibimbap légumes marinés & œuf",cat:"Bowl",link:"https://www.196flavors.com/fr/coree-bibimbap/",bp:2,cuisine:"🇰🇷 Corée",ingredients:[{n:"riz",q:300,u:"g"},{n:"œuf",q:2,u:""},{n:"carotte",q:1,u:""},{n:"courgette",q:1,u:""},{n:"épinards",q:100,u:"g"},{n:"sauce soja",q:2,u:"càs"},{n:"huile de sésame",q:2,u:"càc"},{n:"gochujang",q:1,u:"càs"}],steps:["Cuire le riz à l'eau (idéalement riz coréen ou japonais à grains ronds pour sa texture collante). Laisser reposer couvert 10 min après cuisson.","Couper la carotte et la courgette en julienne fine (ou à la mandoline). Faire revenir la carotte séparément dans ½ càc d'huile de sésame + pincée de sel, 3 à 4 min à feu moyen. Puis la courgette de même 2 à 3 min — chaque légume reste distinct dans le bowl. Assaisonner chacun avec quelques gouttes de sauce soja.","Blanchir les épinards 1 min dans de l'eau bouillante salée. Égoutter, passer sous l'eau froide et presser fortement dans les mains pour enlever le maximum d'eau. Assaisonner avec 1 càc de sauce soja et ½ càc d'huile de sésame.","Faire les œufs au plat dans une poêle huilée à feu doux pour garder le jaune parfaitement coulant. Ou opter pour des œufs mollets (6 min, voir recette dahl).","DRESSAGE — C'est l'étape la plus importante visuellement : disposer le riz en base dans un bol large. Ranger chaque garniture en secteur bien distinct (comme des quartiers de camembert). Poser l'œuf au centre. Déposer 1 bonne càs de gochujang. Arroser d'un filet d'huile de sésame. Parsemer de graines de sésame. Tout mélanger devant les convives avant de manger !"]},
+{id:26,name:"Bowl falafel, taboulé & houmous",cat:"Bowl",link:null,bp:2,cuisine:"🌍 Moyen-Orient",ingredients:[{n:"pois chiches",q:400,u:"g"},{n:"boulgour",q:150,u:"g"},{n:"houmous",q:150,u:"g"},{n:"tomate",q:1,u:""},{n:"concombre",q:0.5,u:""},{n:"persil plat",q:1,u:"bouquet"},{n:"citron",q:2,u:""},{n:"huile d'olive",q:4,u:"càs"}],steps:["TABOULÉ — Cuire le boulgour selon les indications (en général 10 min dans le double de son volume en eau bouillante). Étaler sur une plaque pour refroidir rapidement — un taboulé tiède rend l'eau et perd en texture.","Couper la tomate et le concombre en très petits dés réguliers. Hacher très finement le persil plat (feuilles et un peu de tiges). Mélanger le tout avec le boulgour froid, le jus des 2 citrons, l'huile d'olive et du sel. Le taboulé doit être généreux en persil et bien acidulé. Réfrigérer au moins 30 min.","HOUMOUS MAISON (optionnel) — Mixer les pois chiches égouttés avec 2 càs de tahini, l'ail, le jus d'1 citron, 3 càs d'huile et du sel. Ajouter de l'eau froide pour ajuster la texture — plus on mixe longtemps, plus il est onctueux. Finir avec un filet d'huile et du paprika.","Préparer les falafels selon la recette dédiée. Les servir bien chauds et croustillants.","DRESSER en bowl généreux : base de taboulé dans un bol, quenelle de houmous sur un côté, 3 à 4 falafels chauds. Arroser d'huile d'olive, saupoudrer de paprika et de graines de sésame. Servir avec du pain pita chaud."]},
+{id:27,name:"Banh mi végétarien",cat:"Entrée / Snack",link:null,bp:2,cuisine:"🇻🇳 Vietnam",ingredients:[{n:"baguette",q:1,u:""},{n:"tofu ferme",q:200,u:"g"},{n:"carotte",q:1,u:""},{n:"concombre",q:0.5,u:""},{n:"sauce soja",q:2,u:"càs"},{n:"mayonnaise",q:2,u:"càs"},{n:"sauce hoisin",q:2,u:"càs"},{n:"huile de sésame",q:1,u:"càc"}],steps:["PICKLES (à préparer 30 min avant) — Éplucher la carotte et la couper en julienne fine avec un économe ou une mandoline. Couper le concombre en fines rondelles ou en bâtonnets. Placer dans un bol avec 3 càs de vinaigre de riz, 1 càc de sucre et ½ càc de sel. Mélanger et laisser macérer à température ambiante — les légumes vont ramollir légèrement et prendre une saveur acidulée.","TOFU — Égoutter et sécher le tofu. Couper en tranches de 1 cm. Préparer la marinade : sauce hoisin, sauce soja et huile de sésame. Faire mariner le tofu 10 min en le retournant. Faire dorer dans une poêle bien chaude à feu vif 3 à 4 min par face jusqu'à belle caramélisation. Les bords doivent être légèrement croustillants et brillants.","Mélanger la mayonnaise avec de la sriracha selon votre goût de piment. Réserver.","Couper la baguette fraîche en tronçons de 15 cm. Les ouvrir en deux sans séparer complètement. Passer 2 min au four à 180°C pour les réchauffer et les rendre légèrement croustillantes.","Tartiner généreusement les deux faces de mayo sriracha. Disposer les tranches de tofu caramélisé en couche. Ajouter les pickles bien égouttés. Garnir de feuilles de coriandre fraîche et de menthe, de rondelles de piment frais. Servir immédiatement pendant que la baguette est encore croustillante."]},
+// ── RECETTES VIANDE & POISSON ─────────────────────────────────────────────────
+{id:28,name:"Rougail saucisse",cat:"Plat chaud / Viande",link:"https://www.marmiton.org/recettes/recette_rougail-saucisses_16519.aspx",bp:2,cuisine:"🇫🇷 France",ingredients:[{n:"saucisses fumées",q:200,u:"g"},{n:"tomates",q:2,u:""},{n:"gousse d'ail",q:1,u:""},{n:"piment oiseau",q:0.5,u:""},{n:"thym",q:2,u:"brins"},{n:"huile",q:1,u:"càs"}],steps:["Couper les saucisses fumées en rondelles d'1 cm. Les faire dorer à feu moyen dans un filet d'huile en les retournant régulièrement jusqu'à ce qu'elles soient bien colorées et légèrement croustillantes. Réserver sur papier absorbant.","Dans la même poêle, faire revenir l'ail et  écrasés avec le piment 1 min à feu moyen. Ajouter les tomates concassées (ou coupées en petits morceaux), le thym, le sel et le poivre. Bien écraser les tomates avec une spatule.","Remettre les saucisses dans la sauce. Couvrir et laisser mijoter à feu doux 20 min en remuant de temps en temps jusqu'à ce que la sauce soit bien concentrée et parfumée.","Goûter et ajuster le piment selon votre tolérance. Servir bien chaud sur un bol de riz blanc avec de la coriandre fraîche."]},
+{id:29,name:"Saucisses aux lentilles du Puy",cat:"Plat chaud / Viande",link:"https://www.marmiton.org/recettes/recette_saucisses-aux-lentilles-du-puy_17623.aspx",bp:2,cuisine:"🇫🇷 France",ingredients:[{n:"lentilles vertes du Puy",q:150,u:"g"},{n:"saucisses de Toulouse",q:2,u:""},{n:"carotte",q:1,u:""},{n:"gousse d'ail",q:1,u:""},{n:"céleri",q:1,u:"branche"},{n:"bouquet garni",q:1,u:""}],steps:["Rincer les lentilles du Puy à l'eau froide. Les verser dans une casserole avec de l'eau froide (ne pas saler en début de cuisson — cela durcit les légumineuses). Ajouter la carotte coupée en rondelles, la branche de céleri, l'ail et le bouquet garni. Porter à ébullition puis cuire à feu doux 25 à 30 min. Les lentilles doivent être tendres mais encore entières.","Pendant ce temps, faire dorer les saucisses de Toulouse à la poêle ou sous le gril à feu moyen 3 à 4 min par face jusqu'à coloration uniforme. Les couper en deux dans la longueur si vous le souhaitez.","Égoutter les lentilles en conservant un peu de jus de cuisson. Retirer le bouquet garni. Saler et poivrer. Si les lentilles semblent sèches, ajouter quelques cuillères de jus de cuisson.","Disposer les saucisses sur les lentilles chaudes. Servir avec une bonne moutarde à l'ancienne et du pain de campagne."]},
+{id:30,name:"Hot-dog maison",cat:"Snack / Viande",link:"https://www.marmiton.org/recettes/recette_hot-dog-maison_46843.aspx",bp:2,cuisine:"🇺🇸 USA",ingredients:[{n:"pains à hot-dog",q:2,u:""},{n:"saucisses de Francfort",q:2,u:""},{n:"ketchup",q:2,u:"càs"},{n:"moutarde",q:1,u:"càs"},{n:"cornichons émincés",q:4,u:""},{n:"emmental râpé",q:30,u:"g"},{n:"oignons frits",q:2,u:"càs"}],steps:["Faire chauffer les saucisses de Francfort dans une casserole d'eau frémissante (non bouillante) pendant 5 min — elles ne doivent pas éclater. Alternativement, les faire griller 3 min dans une poêle sèche à feu moyen pour un aspect plus grillé.","Toaster les pains à hot-dog dans le four à 180°C 3 min ou dans un grille-pain. Ils doivent être chauds et légèrement croustillants à l'extérieur mais moelleux à l'intérieur.","Tartiner généreusement l'intérieur de chaque pain de moutarde et de ketchup. Déposer la saucisse chaude dans le pain.","Garnir avec les cornichons émincés, une pincée d'emmental râpé et des oignons frits. Servir immédiatement avec des frites maison ou chips."]},
+{id:31,name:"Pâtes à la Carbonara",cat:"Pâtes / Porc",link:"https://www.marmiton.org/recettes/recette_les-vraies-pates-a-la-carbonara_20491.aspx",bp:2,cuisine:"🇮🇹 Italie",ingredients:[{n:"spaghetti",q:200,u:"g"},{n:"lardons",q:80,u:"g"},{n:"jaunes d'œuf",q:2,u:""},{n:"parmesan râpé",q:40,u:"g"},{n:"poivre noir",q:1,u:"càc"}],steps:["Porter une grande casserole d'eau généreusement salée à ébullition. Cuire les spaghetti al dente selon les indications (en général 1 min de moins que le temps indiqué). Réserver une grande tasse d'eau de cuisson avant d'égoutter.","Dans une poêle froide, mettre les lardons sans matière grasse. Chauffer à feu moyen et laisser fondre doucement leur graisse pendant 5 à 7 min jusqu'à légère dorure. Réserver la poêle hors du feu.","Dans un bol, fouetter les jaunes d'œuf avec la moitié du parmesan, beaucoup de poivre noir fraîchement moulu. La vraie carbonara ne contient pas de crème — c'est l'émulsion des œufs et du fromage qui crée l'onctuosité.","Verser les pâtes égouttées directement dans la poêle avec les lardons (hors du feu — la chaleur résiduelle suffit). Verser immédiatement le mélange œuf-parmesan et mélanger vigoureusement en ajoutant l'eau de cuisson cuillère par cuillère jusqu'à obtenir une sauce crémeuse et brillante qui enrobe chaque pâte.","Servir immédiatement avec le reste du parmesan et une généreuse dose de poivre noir. Ne jamais réchauffer — la carbonara se mange à l'instant."]},
+{id:32,name:"Tartiflette",cat:"Plat chaud / Fromage",link:"https://www.marmiton.org/recettes/recette_tartiflette_11095.aspx",bp:2,cuisine:"🇫🇷 France",ingredients:[{n:"pommes de terre à chair ferme",q:500,u:"g"},{n:"lardons",q:100,u:"g"},{n:"reblochon",q:0.5,u:""},{n:"crème fraîche",q:100,u:"ml"},{n:"vin blanc sec",q:5,u:"cl"}],steps:["Cuire les pommes de terre en robe des champs : les plonger entières dans de l'eau froide salée, porter à ébullition et cuire 20 à 25 min selon leur taille. Elles doivent être juste cuites — une pointe de couteau doit s'enfoncer facilement. Laisser refroidir, éplucher et couper en rondelles d'1 cm.","Préchauffer le four à 200°C. Faire revenir les lardons à sec dans une poêle à feu moyen 5 min jusqu'à légère dorure. Égoutter sur papier absorbant. Dans la même poêle, faire colorer les rondelles de pommes de terre 3 min par face.","Frotter un plat à gratin beurré avec une demi-gousse d'ail. Disposer une couche de pommes de terre, une couche de lardons. Mélanger la crème fraîche avec le vin blanc, saler légèrement (les lardons sont déjà salés), poivrer. Verser sur les légumes.","Couper le demi-reblochon en deux dans l'épaisseur. Déposer les deux moitiés croûte vers le haut sur les pommes de terre. Enfourner 20 à 25 min jusqu'à ce que le reblochon soit fondu, doré et bouillonnant. Servir directement dans le plat avec une salade verte."]},
+{id:33,name:"Salade César au poulet",cat:"Salade / Poulet",link:"https://www.marmiton.org/recettes/recette_la-vraie-salade-cesar_22427.aspx",bp:2,cuisine:"🇺🇸 USA",ingredients:[{n:"cœur de salade romaine",q:1,u:""},{n:"filet de poulet",q:1,u:""},{n:"parmesan en copeaux",q:25,u:"g"},{n:"croûtons maison",q:1,u:"poignée"},{n:"sauce César",q:3,u:"càs"}],steps:["Assaisonner le filet de poulet avec sel, poivre et un filet d'huile d'olive. Cuire dans une poêle à feu moyen-vif 4 à 5 min par face jusqu'à ce que le jus soit clair. Laisser reposer 5 min avant de trancher en biais.","Préparer les croûtons maison : couper du pain de campagne en cubes, les arroser d'huile d'olive et de sel, toaster au four à 180°C 8 à 10 min jusqu'à dorure.","Couper la romaine en larges lamelles, laver et sécher soigneusement. Mettre dans un grand bol. Ajouter les ¾ de la sauce César et mélanger délicatement pour bien enrober chaque feuille.","Dresser dans les assiettes, disposer les tranches de poulet grillé, les croûtons et les copeaux de parmesan. Verser le reste de la sauce. Poivrer généreusement. Servir immédiatement — la salade ne doit pas ramollir."]},
+{id:34,name:"Lasagnes saumon & épinards",cat:"Plat chaud / Poisson",link:"https://www.marmiton.org/recettes/recette_lasagnes-saumon-epinards_47023.aspx",bp:2,cuisine:"🇫🇷 France",ingredients:[{n:"feuilles de lasagne",q:6,u:""},{n:"pavé de saumon",q:150,u:"g"},{n:"épinards frais",q:100,u:"g"},{n:"béchamel",q:250,u:"ml"},{n:"emmental râpé",q:50,u:"g"},{n:"crème fraîche",q:100,u:"ml"},{n:"citron",q:0.5,u:""}],steps:["Pocher le pavé de saumon dans de l'eau frémissante légèrement salée avec une rondelle de citron pendant 8 min. Égoutter, retirer la peau et les arêtes, émietter grossièrement. Arroser d'un filet de citron et de poivre.","Faire tomber les épinards dans une poêle avec un peu de beurre et d'ail 3 min. Saler, poivrer, presser légèrement pour retirer l'excès d'eau. Réserver.","Préparer la béchamel : faire fondre 25g de beurre, ajouter 25g de farine, fouetter 1 min pour former un roux. Ajouter 25 cl de lait chaud progressivement en fouettant. Cuire 3 min. Incorporer la crème fraîche, saler, poivrer, muscade. Mélanger.","Préchauffer le four à 180°C. Dans un plat beurré, alterner couches de lasagne, épinards, saumon émietté et béchamel. Terminer par une couche de béchamel généreuse. Saupoudrer d'emmental râpé.","Cuire 35 min à 180°C jusqu'à dorure. Laisser reposer 5 min avant de servir."]},
+{id:35,name:"Pâtes au saumon fumé et citron",cat:"Pâtes / Poisson",link:"https://www.marmiton.org/recettes/recette_tagliatelles-au-saumon-fume_19822.aspx",bp:2,cuisine:"🇫🇷 France",ingredients:[{n:"tagliatelles",q:200,u:"g"},{n:"saumon fumé",q:100,u:"g"},{n:"crème fraîche",q:100,u:"ml"},{n:"citron",q:0.5,u:""},{n:"aneth frais",q:4,u:"brins"},{n:"câpres",q:1,u:"càs"}],steps:["Cuire les tagliatelles al dente dans une grande casserole d'eau bouillante salée selon les indications du paquet. Réserver une tasse d'eau de cuisson.","Couper le saumon fumé en larières de 2 cm. Hacher finement l'aneth frais.","Dans une grande poêle à feu moyen-doux, chauffer la crème fraîche avec le zeste de citron râpé et le jus de citron. Laisser frémir doucement 2 min pour infuser les arômes — ne pas faire bouillir.","Ajouter les pâtes égouttées directement dans la crème, mélanger délicatement en ajoutant un peu d'eau de cuisson si nécessaire. Hors du feu, incorporer le saumon fumé et les câpres rincées — la chaleur résiduelle suffit à les réchauffer sans les cuire.","Dresser dans des assiettes chaudes, parsemer d'aneth frais et d'un tour de poivre noir. Servir immédiatement."]},
+{id:36,name:"Croque-monsieur classique",cat:"Snack / Fromage",link:"https://www.marmiton.org/recettes/recette_croque-monsieur_11116.aspx",bp:2,cuisine:"🇫🇷 France",ingredients:[{n:"tranches de pain de mie",q:4,u:""},{n:"tranches de jambon blanc",q:2,u:""},{n:"emmental râpé",q:75,u:"g"},{n:"beurre",q:15,u:"g"},{n:"farine",q:1,u:"càs"},{n:"lait",q:100,u:"ml"}],steps:["Préparer la béchamel : faire fondre le beurre à feu moyen, ajouter la farine et fouetter 1 min. Verser le lait chaud progressivement en fouettant jusqu'à épaississement. Saler, poivrer, ajouter une pincée de muscade. Laisser refroidir légèrement.","Préchauffer le four à 200°C (gril). Tartiner 2 tranches de pain de béchamel sur une face, puis d'une fine couche de moutarde si désiré. Déposer 1 tranche de jambon et 1/3 du fromage sur chaque tranche.","Fermer le sandwich avec les 2 autres tranches de pain. Napper généreusement le dessus de béchamel (2 càs par sandwich) et répartir le reste du fromage râpé.","Poser sur une plaque et gratiner au four à 200°C pendant 10 à 12 min jusqu'à ce que le dessus soit bien doré et bouillonnant. Servir immédiatement avec une salade verte."]},
+{id:37,name:"Quiche Lorraine",cat:"Quiche / Porc",link:"https://www.marmiton.org/recettes/recette_quiche-lorraine_11114.aspx",bp:2,cuisine:"🇫🇷 France",ingredients:[{n:"pâte brisée",q:1,u:"portion"},{n:"lardons",q:100,u:"g"},{n:"œuf",q:2,u:""},{n:"crème fraîche",q:150,u:"ml"},{n:"lait",q:50,u:"ml"},{n:"emmental râpé",q:50,u:"g"}],steps:["Préchauffer le four à 180°C. Foncer un moule à tarte individuel (ou un grand moule pour 2) de pâte brisée en la faisant dépasser légèrement des bords. Piquer le fond à la fourchette. Faire cuire à blanc 10 min avec des poids (ou des légumes secs sur du papier sulfurisé).","Faire revenir les lardons à sec dans une poêle à feu moyen 5 min jusqu'à légère dorure. Égoutter sur papier absorbant.","Dans un bol, fouetter les œufs avec la crème fraîche, le lait, une bonne pincée de muscade, du sel (attention les lardons sont salés) et du poivre. L'appareil doit être homogène et légèrement mousseux.","Répartir les lardons sur le fond de tarte précuit. Verser l'appareil aux œufs. Saupoudrer d'emmental râpé.","Enfourner 30 à 35 min à 180°C jusqu'à ce que l'appareil soit pris et légèrement doré. La quiche doit trembler légèrement au centre — elle finira de prendre en refroidissant. Laisser tiédir 5 min avant de démouler."]},
+{id:38,name:"Quiche thon, tomates cerises & moutarde",cat:"Quiche / Poisson",link:"https://www.marmiton.org/recettes/recette_quiche-au-thon_21247.aspx",bp:2,cuisine:"🇫🇷 France",ingredients:[{n:"pâte brisée",q:1,u:"portion"},{n:"thon en boîte",q:100,u:"g"},{n:"tomates cerises",q:100,u:"g"},{n:"œuf",q:2,u:""},{n:"crème fraîche",q:100,u:"ml"},{n:"moutarde à l'ancienne",q:1,u:"càs"},{n:"emmental râpé",q:40,u:"g"}],steps:["Préchauffer le four à 180°C. Étaler la pâte brisée dans un moule, piquer le fond, faire précuire 10 min à blanc.","Égoutter soigneusement le thon en boîte et l'émietter à la fourchette. Couper les tomates cerises en deux.","Tartiner généreusement le fond de tarte précuit de moutarde à l'ancienne — c'est le goût signature de cette quiche. Répartir le thon émietté et les demi-tomates cerises.","Fouetter les œufs avec la crème, saler légèrement, poivrer. Verser sur la garniture. Couvrir de fromage râpé.","Cuire 30 min à 180°C. Servir tiède avec une salade verte."]},
+{id:39,name:"Quiche épinards & feta",cat:"Quiche / Végétarien",link:"https://www.marmiton.org/recettes/recette_quiche-aux-epinards-et-feta_47826.aspx",bp:2,cuisine:"🌍 Moyen-Orient",ingredients:[{n:"pâte brisée",q:1,u:"portion"},{n:"épinards frais",q:150,u:"g"},{n:"feta",q:100,u:"g"},{n:"œuf",q:2,u:""},{n:"crème fraîche",q:100,u:"ml"}],steps:["Préchauffer le four à 180°C. Foncer un moule de pâte brisée, piquer le fond, précuire 10 min à blanc.","Faire tomber les épinards à la poêle avec un peu de beurre et d'ail 3 min. Bien les presser dans les mains pour enlever l'excès d'eau — sinon la quiche sera détrempée.","Mélanger épinards, feta émiettée, œufs battus, crème, une pincée de muscade et du poivre (pas besoin de saler, la feta l'est déjà).","Verser dans le fond de tarte. Cuire 30 à 35 min à 180°C. Servir tiède ou à température ambiante."]},
+{id:40,name:"Tartine savoyarde",cat:"Snack / Fromage",link:"https://www.marmiton.org/recettes/recette_tartines-savoyard_45281.aspx",bp:2,cuisine:"🇫🇷 France",ingredients:[{n:"tranches de pain de campagne",q:2,u:""},{n:"reblochon",q:100,u:"g"},{n:"lardons",q:75,u:"g"},{n:"pomme de terre cuite",q:1,u:""}],steps:["Précuire une pomme de terre en robe des champs (20 min à l'eau bouillante), laisser refroidir légèrement et couper en rondelles fines.","Faire revenir les lardons à sec dans une poêle à feu moyen 5 min jusqu'à légère dorure. Égoutter.","Disposer les rondelles de pommes de terre sur les tartines de pain de campagne. Répartir les lardons revenus par-dessus. Couper le reblochon en tranches et couvrir généreusement les tartines.","Passer au four à 200°C 8 à 10 min jusqu'à ce que le reblochon soit bien fondu et légèrement doré. Servir immédiatement avec une salade verte assaisonnée de vinaigrette moutardée."]},
+{id:41,name:"Sandwich BLT",cat:"Snack / Viande",link:"https://www.marmiton.org/recettes/recette_sandwich-blt_55732.aspx",bp:2,cuisine:"🇺🇸 USA",ingredients:[{n:"tranches de pain de mie",q:4,u:""},{n:"tranches de lard fumé",q:4,u:""},{n:"tomate",q:1,u:""},{n:"feuilles de salade",q:2,u:""},{n:"mayonnaise",q:2,u:"càs"}],steps:["Faire griller les tranches de lard fumé dans une poêle sèche à feu vif jusqu'à ce qu'elles soient bien croustillantes et dorées. Égoutter sur papier absorbant — le lard doit craquer sous la dent.","Toaster les tranches de pain de mie dans un grille-pain ou au four — un bon BLT repose sur la qualité du pain toasté.","Couper la tomate en rondelles épaisses, saler légèrement les deux faces et laisser dégorger 2 min sur papier absorbant.","Tartiner généreusement 2 tranches de pain de mayonnaise. Disposer les feuilles de salade, puis les rondelles de tomate et enfin le lard croustillant en couche. Fermer avec les 2 autres tranches.","Couper en diagonale avec un couteau bien aiguisé. Servir immédiatement."]},
+{id:42,name:"Risotto chorizo",cat:"Plat chaud / Viande",link:"https://www.marmiton.org/recettes/recette_risotto-au-chorizo_34812.aspx",bp:2,cuisine:"🇪🇸 Espagne",ingredients:[{n:"riz arborio",q:150,u:"g"},{n:"chorizo fort",q:80,u:"g"},{n:"bouillon de légumes",q:400,u:"ml"},{n:"vin blanc",q:50,u:"ml"},{n:"parmesan râpé",q:40,u:"g"},{n:"beurre",q:15,u:"g"}],steps:["Couper le chorizo en rondelles et les faire dorer dans une large poêle à feu moyen 3 à 4 min. Réserver, conserver la graisse rendue dans la poêle — elle va parfumer tout le risotto.","Dans la même poêle, faire revenir l'oignon émincé dans la graisse du chorizo 3 min. Ajouter le riz arborio et nacrer 2 min en remuant — chaque grain doit être enrobé et translucide.","Déglacer avec le vin blanc, remuer jusqu'à absorption complète. Puis ajouter le bouillon chaud louche par louche en remuant constamment 18 à 20 min — ne jamais cesser de remuer, c'est ce qui libère l'amidon et crée la texture crémeuse.","Hors du feu, incorporer le beurre froid en dés et la moitié du parmesan. Remuer énergiquement pour émulsionner. Ajouter les rondelles de chorizo réservées, bien mélanger.","Servir immédiatement dans des assiettes creuses chaudes avec le reste du parmesan et du poivre noir."]},
+{id:43,name:"Risotto aux crevettes",cat:"Plat chaud / Fruits de mer",link:"https://www.marmiton.org/recettes/recette_poele-de-crevettes-au-chorizo_94832.aspx",bp:2,cuisine:"🇮🇹 Italie",ingredients:[{n:"riz arborio",q:150,u:"g"},{n:"crevettes décortiquées",q:80,u:"g"},{n:"bouillon de légumes",q:400,u:"ml"},{n:"vin blanc",q:50,u:"ml"},{n:"parmesan râpé",q:40,u:"g"},{n:"beurre",q:15,u:"g"},{n:"gousse d'ail",q:1,u:""}],steps:["Faire revenir l'ail et l'oignon dans du beurre 3 min. Ajouter le riz arborio et nacrer 2 min.","Déglacer au vin blanc, laisser absorber. Ajouter le bouillon chaud louche par louche en remuant constamment pendant 18 à 20 min.","Dans une poêle séparée, faire sauter les crevettes avec un peu de beurre, d'ail et de paprika 2 à 3 min — elles doivent être roses et nacrées. Ne pas trop cuire, elles deviendraient caoutchouteuses. Assaisonner.","Hors du feu, incorporer le beurre froid et le parmesan au risotto. Remuer énergiquement. Ajouter les crevettes sautées. Parsemer de persil haché. Servir immédiatement."]},
+{id:44,name:"Pâtes aux crevettes et bisque",cat:"Pâtes / Fruits de mer",link:"https://www.marmiton.org/recettes/recette_linguines-aux-crevettes-et-bisque_93017.aspx",bp:2,cuisine:"🇫🇷 France",ingredients:[{n:"linguines",q:200,u:"g"},{n:"crevettes décortiquées",q:150,u:"g"},{n:"bisque de homard",q:0.5,u:"boîte"},{n:"crème fraîche",q:100,u:"ml"},{n:"tomates cerises",q:100,u:"g"},{n:"gousse d'ail",q:1,u:""},{n:"persil frais",q:4,u:"brins"}],steps:["Cuire les linguines al dente dans une grande casserole d'eau bouillante salée. Réserver une tasse d'eau de cuisson.","Faire revenir les crevettes avec l'ail dans un filet d'huile d'olive à feu vif 2 min de chaque côté. Elles doivent être roses et légèrement colorées. Réserver.","Dans la même poêle, verser la bisque de homard et la crème fraîche. Ajouter les tomates cerises coupées en deux. Laisser réduire à feu moyen 5 min en remuant — la sauce doit être nappante et parfumée.","Ajouter les pâtes égouttées et mélanger en ajoutant un peu d'eau de cuisson si nécessaire. Remettre les crevettes, mélanger délicatement.","Servir immédiatement parsemé de persil haché et d'un filet d'huile d'olive."]},
+{id:45,name:"Filet de dinde sauce boursin, riz",cat:"Plat chaud / Volaille",link:"https://www.marmiton.org/recettes/recette_escalope-de-dinde-au-boursin_12764.aspx",bp:2,cuisine:"🇫🇷 France",ingredients:[{n:"filets de dinde",q:2,u:""},{n:"boursin ail et fines herbes",q:75,u:"g"},{n:"crème fraîche",q:100,u:"ml"},{n:"riz basmati",q:125,u:"g"},{n:"bouillon de volaille",q:50,u:"ml"}],steps:["Cuire le riz basmati selon les indications. Saler et réserver couvert d'un torchon propre.","Assaisonner les filets de dinde avec sel et poivre. Les faire dorer dans une poêle avec un filet d'huile à feu moyen-vif 3 à 4 min par face jusqu'à coloration dorée. Ils ne doivent pas être complètement cuits à cœur — ils finiront au four.","Déposer les filets dans un plat à four. Mélanger le boursin avec la crème fraîche et le bouillon de volaille jusqu'à consistance lisse. Verser la sauce sur la dinde.","Couvrir de papier alu et enfourner à 180°C pendant 20 min. Retirer l'alu les 5 dernières minutes pour faire légèrement dorer la surface. La dinde est cuite quand le jus est clair.","Servir avec le riz basmati, napper généreusement de sauce au boursin."]},
+{id:46,name:"Filet de dinde sauce curry, pâtes",cat:"Plat chaud / Volaille",link:"https://www.marmiton.org/recettes/recette_escalope-de-dinde-au-curry_12399.aspx",bp:2,cuisine:"🇮🇳 Inde",ingredients:[{n:"filets de dinde",q:2,u:""},{n:"curry en poudre",q:1,u:"càs"},{n:"lait de coco",q:100,u:"ml"},{n:"crème fraîche",q:50,u:"ml"},{n:"pâtes",q:200,u:"g"},{n:"gousse d'ail",q:1,u:""}],steps:["Couper les filets de dinde en lanières de 2 cm. Assaisonner avec sel et poivre.","Faire chauffer un filet d'huile dans une grande poêle à feu moyen-vif. Faire revenir les lanières de dinde avec l'ail haché 5 à 6 min en remuant jusqu'à ce qu'elles soient dorées et cuites à cœur. Saupoudrer le curry et mélanger 1 min pour qu'il torréfie légèrement.","Verser le lait de coco et la crème fraîche. Mélanger, porter à frémissement puis réduire le feu au minimum. Laisser mijoter 12 à 15 min en remuant de temps en temps jusqu'à sauce crémeuse et bien parfumée. Ajuster le sel.","Pendant ce temps, cuire les pâtes al dente dans une grande casserole d'eau bouillante salée.","Servir les pâtes nappées de la dinde au curry. Garnir de coriandre fraîche et d'un filet de citron."]},
+{id:47,name:"Pizza lardons, poivron, champignons & chèvre",cat:"Pizza / Fromage",link:"https://www.marmiton.org/recettes/recette_pizza-lardons-chevre_93481.aspx",bp:2,cuisine:"🇮🇹 Italie",ingredients:[{n:"pâte à pizza",q:1,u:"portion"},{n:"sauce tomate",q:75,u:"ml"},{n:"lardons",q:75,u:"g"},{n:"poivron",q:0.5,u:""},{n:"tomate",q:1,u:""},{n:"champignons de Paris",q:60,u:"g"},{n:"chèvre frais",q:60,u:"g"},{n:"mozzarella",q:80,u:"g"}],steps:["Préchauffer le four à 220°C (four chaud = pizza croustillante). Étaler la pâte à pizza finement sur du papier sulfurisé fariné.","Napper de sauce tomate en laissant 1 cm de bord. Répartir la mozzarella déchirée en morceaux.","Faire revenir les lardons 3 min à sec pour les dégraisser légèrement. Couper le poivron en lanières fines, les champignons en lamelles, la tomate en rondelles fines. Répartir tous les ingrédients sur la pizza. Émietter le chèvre frais en petits morceaux. Saupoudrer d'origan.","Enfourner sur la lèchefrite bien chaude (ou une pierre à pizza) 12 à 14 min jusqu'à ce que le bord soit bien doré et la garniture dorée-bouillonnante. Servir immédiatement."]},
+{id:48,name:"Pizza crème de pistache, mortadelle & roquette",cat:"Pizza / Charcuterie",link:"https://www.marmiton.org/recettes/recette_pizza-mortadelle-pistache_102738.aspx",bp:2,cuisine:"🇮🇹 Italie",ingredients:[{n:"pâte à pizza",q:1,u:"portion"},{n:"mozzarella",q:80,u:"g"},{n:"crème de pistache",q:2,u:"càs"},{n:"mortadelle",q:50,u:"g"},{n:"pistaches concassées",q:1,u:"càs"},{n:"roquette",q:1,u:"poignée"}],steps:["Préchauffer le four à 220°C. Étaler la pâte à pizza, répartir la mozzarella déchirée. Ne pas mettre de sauce tomate — c'est une pizza blanche.","Enfourner 10 à 12 min jusqu'à ce que la mozzarella soit fondue et que les bords soient bien dorés.","À la sortie du four (c'est important : on garnit après cuisson), napper de crème de pistache en filet irrégulier. Déposer les tranches de mortadelle en formant des fronces légères pour l'aspect visuel.","Parsemer de pistaches concassées et d'une grosse poignée de roquette fraîche. Terminer par un filet d'huile d'olive et quelques tours de poivre. Servir immédiatement."]},
+{id:49,name:"Feuilles de brick thon, œuf & boursin",cat:"Snack / Poisson",link:"https://www.marmiton.org/recettes/recette_feuilles-de-brick-au-thon-et-oeuf_17241.aspx",bp:2,cuisine:"🇫🇷 France",ingredients:[{n:"feuilles de brick",q:2,u:""},{n:"thon en boîte",q:100,u:"g"},{n:"œuf",q:2,u:""},{n:"boursin ail et fines herbes",q:50,u:"g"},{n:"salade verte",q:1,u:"poignée"},{n:"citron",q:0.5,u:""}],steps:["Bien égoutter le thon en boîte et l'émietter finement à la fourchette. Mélanger avec le boursin, un filet de citron, du sel et du poivre. La farce doit être crémeuse et bien assaisonnée.","Déposer une feuille de brick à plat. Placer la farce au thon-boursin sur la moitié inférieure de la feuille, en formant un léger creux au centre. Casser délicatement un œuf entier dans ce creux — attention à ne pas crever le jaune.","Replier la feuille de brick en chausson en scellant bien les bords avec un peu d'eau ou de blanc d'œuf pour éviter que le chausson ne s'ouvre à la cuisson.","Cuire à la poêle dans un filet d'huile d'olive à feu moyen, 3 min de chaque côté, en retournant très délicatement pour préserver l'œuf coulant. La brick doit être bien dorée et croustillante.","Servir immédiatement sur la salade verte assaisonnée d'une vinaigrette citron-olive. Le jaune doit être encore coulant."]},
+{id:50,name:"Feuilles de brick jambon & œuf",cat:"Snack / Porc",link:"https://www.marmiton.org/recettes/recette_brick-au-jambon-et-oeuf_12938.aspx",bp:2,cuisine:"🇫🇷 France",ingredients:[{n:"feuilles de brick",q:2,u:""},{n:"tranches de jambon blanc",q:2,u:""},{n:"œuf",q:2,u:""},{n:"emmental râpé",q:40,u:"g"},{n:"moutarde",q:1,u:"càc"}],steps:["Déposer une feuille de brick à plat. Tartiner légèrement de moutarde au centre. Placer une tranche de jambon pliée sur la moitié inférieure. Parsemer d'emmental râpé en gardant un espace au milieu.","Casser délicatement un œuf entier au centre de la garniture. Assaisonner de poivre (pas de sel, le jambon et le fromage le sont déjà).","Replier la feuille en chausson hermétique en commençant par le bas, puis les côtés. Appuyer sur les bords pour bien sceller.","Cuire à la poêle dans un filet d'huile à feu moyen 3 min par face jusqu'à dorure et croustillant. Retourner avec précaution avec une grande spatule.","Servir immédiatement, éventuellement avec de la salade verte et de la moutarde."]},
+{id:51,name:"Hamburger maison",cat:"Snack / Viande",link:"https://www.marmiton.org/recettes/recette_hamburger-maison_47833.aspx",bp:2,cuisine:"🇺🇸 USA",ingredients:[{n:"pains à burger",q:2,u:""},{n:"bœuf haché",q:300,u:"g"},{n:"tranches de cheddar",q:2,u:""},{n:"feuilles de salade",q:2,u:""},{n:"tomate",q:1,u:""},{n:"ketchup",q:2,u:"càs"},{n:"mayonnaise",q:2,u:"càs"},{n:"cornichons",q:4,u:""}],steps:["Diviser le bœuf haché en 2 portions égales. Former des steaks légèrement plus larges que le pain (ils rétrécissent à la cuisson). Assaisonner généreusement de sel et poivre sur les deux faces juste avant la cuisson — pas avant, car le sel fait sortir l'humidité.","Cuire les steaks dans une poêle ou sur un gril très chaud à feu vif 2 à 3 min par face pour un steak saignant, 3 à 4 min pour à point. Poser le cheddar sur chaque steak en fin de cuisson et couvrir 30 secondes pour le faire fondre.","Toaster les pains coupés en deux dans le jus de cuisson ou au four 2 min.","Assembler dans l'ordre : face inférieure du pain, feuille de salade (protège le pain du jus), tranche de tomate, steak avec cheddar fondu, cornichons en rondelles, ketchup et mayonnaise. Fermer avec la face supérieure.","Servir immédiatement avec des frites maison ou des chips."]},
+{id:52,name:"Boulettes épicées, sauce champignons & parmesan",cat:"Plat chaud / Viande",link:"https://www.marmiton.org/recettes/recette_boulettes-de-viande-sauce-champignons_83921.aspx",bp:2,cuisine:"🇫🇷 France",ingredients:[{n:"bœuf haché",q:250,u:"g"},{n:"cumin",q:0.5,u:"càs"},{n:"paprika",q:0.5,u:"càs"},{n:"champignons de Paris",q:150,u:"g"},{n:"crème fraîche",q:100,u:"ml"},{n:"parmesan râpé",q:40,u:"g"},{n:"pâtes",q:200,u:"g"},{n:"gousse d'ail",q:1,u:""}],steps:["Mélanger le bœuf haché avec le cumin, le paprika, du sel et du poivre. Former des boulettes de la taille d'une grosse noix en roulant entre les paumes. Ne pas trop travailler la viande pour qu'elles restent moelleuses.","Faire dorer les boulettes dans une poêle huilée à feu moyen-vif sur toutes les faces 6 à 8 min en les tournant régulièrement. Réserver sur papier absorbant.","Dans la même poêle, faire revenir les champignons lamellés avec l'ail haché à feu vif jusqu'à coloration 5 à 7 min. Assaisonner.","Ajouter la crème fraîche, laisser réduire à feu moyen 3 min. Incorporer le parmesan râpé, mélanger jusqu'à sauce crémeuse. Remettre les boulettes dans la sauce, laisser mijoter ensemble 5 min.","Cuire les pâtes al dente pendant ce temps. Servir les pâtes nappées de sauce et de boulettes, parsemées de persil haché."]},
+{id:53,name:"Chili con carne",cat:"Plat chaud / Viande",link:"https://www.marmiton.org/recettes/recette_chili-con-carne_11128.aspx",bp:2,cuisine:"🇲🇽 Mexique",ingredients:[{n:"bœuf haché",q:250,u:"g"},{n:"haricots rouges",q:200,u:"g"},{n:"tomates concassées",q:200,u:"g"},{n:"poivron rouge",q:0.5,u:""},{n:"cumin",q:0.5,u:"càs"},{n:"poudre de chili",q:0.5,u:"càs"},{n:"paprika fumé",q:0.5,u:"càc"},{n:"gousse d'ail",q:1,u:""}],steps:["Faire revenir l'ail haché et le poivron coupé en petits dés dans un filet d'huile d'olive à feu moyen 4 min jusqu'à ce qu'ils soient tendres.","Ajouter le bœuf haché, monter le feu et faire dorer en égrainant bien la viande avec une spatule. Cuire 6 à 8 min jusqu'à ce qu'il n'y ait plus de jus et que la viande soit bien colorée — c'est la réaction de Maillard qui donne du goût.","Incorporer le cumin, la poudre de chili et le paprika fumé, mélanger 1 min. Ajouter les tomates concassées et les haricots rouges égouttés et rincés. Saler, poivrer.","Laisser mijoter à feu doux et à couvert 25 à 30 min en remuant de temps en temps. Le chili est prêt quand la sauce est épaisse et concentrée. Ajuster le piment selon le goût.","Servir sur du riz blanc avec de la crème fraîche, du cheddar râpé et de la coriandre fraîche."]},
+{id:54,name:"Burritos maison",cat:"Plat chaud / Viande",link:"https://www.marmiton.org/recettes/recette_burritos-mexicains_24731.aspx",bp:2,cuisine:"🇲🇽 Mexique",ingredients:[{n:"grandes tortillas de blé",q:2,u:""},{n:"bœuf haché",q:200,u:"g"},{n:"haricots noirs",q:200,u:"g"},{n:"poivron",q:0.5,u:""},{n:"riz cuit",q:80,u:"g"},{n:"cheddar râpé",q:50,u:"g"},{n:"guacamole",q:2,u:"càs"},{n:"cumin",q:0.5,u:"càs"}],steps:["Faire revenir le bœuf haché avec le poivron en dés, le cumin et la poudre de chili à feu vif 8 min. Ajouter les haricots noirs égouttés, mélanger et laisser cuire encore 3 min. Assaisonner.","Chauffer les tortillas dans une poêle sèche 30 secondes par face ou au micro-ondes 20 secondes enveloppées dans du papier absorbant humide — elles doivent être souples pour rouler sans craquer.","Disposer la garniture au centre de chaque tortilla, en laissant 3 cm libres sur les côtés et en bas : riz, viande-haricots, fromage, guacamole, salsa et crème fraîche.","Plier le bas de la tortilla sur la garniture, puis replier les côtés et rouler fermement. Pour le maintenir fermé, le passer 1 min à la poêle sèche à feu moyen côté pli en dessous — cela soude et croustille légèrement la tortilla.","Couper en diagonale et servir immédiatement."]},
+{id:55,name:"Hachis Parmentier",cat:"Plat chaud / Viande",link:"https://www.marmiton.org/recettes/recette_hachis-parmentier_15346.aspx",bp:2,cuisine:"🇫🇷 France",ingredients:[{n:"pommes de terre",q:350,u:"g"},{n:"bœuf haché",q:250,u:"g"},{n:"gousse d'ail",q:1,u:""},{n:"beurre",q:25,u:"g"},{n:"lait chaud",q:50,u:"ml"},{n:"emmental râpé",q:50,u:"g"},{n:"thym",q:2,u:"brins"}],steps:["Cuire les pommes de terre pelées et coupées en morceaux dans de l'eau bouillante salée 20 min. Égoutter, remettre 1 min sur le feu pour sécher. Écraser au presse-purée en incorporant le beurre froid puis le lait chaud. Saler, poivrer, muscader. La purée doit être crémeuse et sans grumeaux. Réserver.","Faire revenir l'ail haché dans un filet d'huile d'olive à feu moyen. Ajouter le bœuf haché, monter le feu et faire dorer 8 min en égrainant bien. Ajouter les tomates concassées et le thym, laisser mijoter 15 min à feu moyen. Saler, poivrer.","Préchauffer le four à 200°C. Dans un plat à gratin beurré, étaler la viande en couche régulière. Recouvrir de la purée en lissant à la spatule ou en créant des sillons à la fourchette pour une belle surface grillée.","Saupoudrer d'emmental râpé. Enfourner 20 à 25 min jusqu'à ce que le dessus soit gratiné et doré. Servir directement dans le plat avec une salade verte."]}
+,
+{id:56,name:"Shakshuka complète",cat:"Plat chaud / Végétarien",link:null,bp:2,cuisine:"🌍 Moyen-Orient",ingredients:[{n:"œuf",q:4,u:""},{n:"merguez",q:2,u:""},{n:"poivron rouge",q:1,u:""},{n:"poivron vert",q:1,u:""},{n:"tomates concassées",q:400,u:"g"},{n:"oignon",q:1,u:""},{n:"gousse d'ail",q:3,u:""},{n:"cumin",q:1,u:"càc"},{n:"paprika fumé",q:1,u:"càc"},{n:"harissa",q:1,u:"càc"},{n:"coriandre fraîche",q:1,u:"bouquet"},{n:"pain pita",q:2,u:""}],steps:["Émincer l'oignon en demi-rondelles fines et couper les poivrons en lanières. Faire chauffer un généreux filet d'huile d'olive dans une grande poêle à bords hauts ou une cocotte à feu moyen. Faire revenir l'oignon et les poivrons ensemble 8 à 10 min en remuant régulièrement jusqu'à ce qu'ils soient bien fondants et légèrement caramélisés.","Couper les merguez en rondelles d'1 cm. Les ajouter dans la poêle et faire dorer 3 min en remuant pour qu'elles colorent sur toutes les faces et libèrent leurs épices dans les légumes.","Ajouter l'ail pressé, le cumin, le paprika fumé et la harissa. Mélanger et laisser torréfier les épices 1 min à feu moyen — elles doivent embaumer la cuisine.","Verser les tomates concassées. Saler, poivrer et bien mélanger. Laisser mijoter à feu doux à découvert 10 min jusqu'à ce que la sauce épaississe et concentre ses saveurs. Goûter et ajuster le piment selon votre tolérance.","Avec le dos d'une cuillère, creuser 4 nids bien distincts dans la sauce. Casser délicatement un œuf dans chaque nid en faisant attention de ne pas crever le jaune.","Couvrir la poêle et cuire à feu doux 5 à 7 min selon la cuisson souhaitée : 5 min pour un blanc pris et un jaune encore très coulant, 7 min pour un jaune mi-coulant. Surveiller régulièrement.","Parsemer généreusement de coriandre fraîche ciselée. Servir directement dans la poêle au centre de la table avec du pain pita chaud coupé en quartiers pour saucer."  ]},
+{id:57,name:"Lasagnes bolognaise maison",cat:"Plat chaud / Viande",link:null,bp:4,cuisine:"🇮🇹 Italie",ingredients:[{n:"feuilles de lasagne",q:9,u:""},{n:"bœuf haché",q:400,u:"g"},{n:"tomates concassées",q:400,u:"g"},{n:"carotte",q:1,u:""},{n:"gousse d'ail",q:2,u:""},{n:"vin rouge",q:100,u:"ml"},{n:"concentré de tomates",q:1,u:"càs"},{n:"beurre",q:40,u:"g",s:"Béchamel"},{n:"farine",q:40,u:"g"},{n:"lait",q:500,u:"ml"},{n:"parmesan râpé",q:100,u:"g"}],steps:["BOLOGNAISE — Émincer finement l'oignon et la carotte en petits dés. Faire revenir dans un filet d'huile à feu moyen 5 min. Ajouter l'ail haché, cuire 1 min.","Monter le feu à vif, ajouter le bœuf haché et l'égrainer à la spatule. Faire dorer 8 min jusqu'à ce que toute l'humidité soit évaporée et la viande bien colorée. Déglacer avec le vin rouge, gratter les sucs.","Incorporer les tomates concassées, le concentré, le laurier et le thym. Saler, poivrer. Laisser mijoter à feu doux à couvert 45 min en remuant toutes les 10 min. La sauce doit être épaisse et concentrée.","BÉCHAMEL — Faire fondre le beurre à feu moyen. Ajouter la farine d'un coup et fouetter 1 min pour former un roux blond. Verser le lait chaud progressivement en fouettant sans cesse jusqu'à épaississement (5 min). Saler, poivrer et muscader généreusement.","Préchauffer le four à 180°C. Dans un grand plat à gratin beurré, étaler une fine couche de béchamel au fond. Puis monter 3 couches dans cet ordre : feuilles de lasagne → bolognaise → béchamel → parmesan.","Terminer par une couche de feuilles, une généreuse couche de béchamel et tout le parmesan restant. Couvrir de papier alu et enfourner 30 min. Retirer l'alu et cuire encore 15 min jusqu'à gratinage doré et bouillonnant.","Laisser reposer 10 min avant de couper — les couches se tiennent mieux. Servir avec une salade verte."]},
+{id:58,name:"Œufs en meurette",cat:"Plat chaud / Végétarien",link:null,bp:2,cuisine:"🇫🇷 France",ingredients:[{n:"œuf",q:4,u:""},{n:"vin rouge (Bourgogne)",q:500,u:"ml"},{n:"lardons",q:150,u:"g"},{n:"champignons de Paris",q:200,u:"g"},{n:"gousse d'ail",q:2,u:""},{n:"bouquet garni",q:1,u:""},{n:"beurre",q:20,u:"g"},{n:"farine",q:1,u:"càs"},{n:"pain de campagne",q:4,u:"tranches"}],steps:["Faire revenir les lardons à sec dans une poêle à feu moyen jusqu'à légère dorure. Ajouter les champignons coupés en quartiers et cuire ensemble 5 à 7 min à feu vif jusqu'à belle coloration. Saler légèrement, poivrer. Réserver.","Dans la même poêle, faire fondre le beurre à feu moyen. Faire suer l'ail haché 1 min. Singer : saupoudrer la farine et fouetter 1 min pour former un roux.","Verser le vin rouge d'un coup en fouettant pour éviter les grumeaux. Ajouter le bouquet garni. Laisser mijoter à feu moyen-doux 20 min jusqu'à légère réduction et que la sauce nape une cuillère. Ajuster le sel et le poivre.","Ajouter les lardons et champignons réservés dans la sauce meurette. Laisser mijoter ensemble encore 5 min pour que les saveurs se mélangent. Retirer le bouquet garni.","Pocher les œufs : porter une casserole d'eau frémissante avec un trait de vinaigre blanc à feu doux. Casser chaque œuf dans un ramequin. Créer un tourbillon et glisser l'œuf délicatement. Pocher 3 min pour un jaune coulant. Égoutter sur papier absorbant.","Frotter les tranches de pain de campagne avec une gousse d'ail coupée en deux. Les toaster dans une poêle avec du beurre jusqu'à belle dorure des deux côtés.","Dresser : poser un croûton dans chaque assiette creuse, déposer un œuf poché dessus, napper généreusement de sauce meurette avec les lardons et champignons. Parsemer de persil plat haché."]},
+{id:59,name:"Ficelle picarde",cat:"Plat chaud / Porc",link:null,bp:2,cuisine:"🇫🇷 France",ingredients:[{n:"farine",q:100,u:"g",s:"Crêpes"},{n:"œuf",q:2,u:""},{n:"lait",q:250,u:"ml"},{n:"beurre",q:20,u:"g"},{n:"champignons de Paris",q:150,u:"g",s:"Farce"},{n:"jambon blanc",q:4,u:"tranches"},{n:"beurre",q:40,u:"g",s:"Béchamel"},{n:"farine",q:40,u:"g"},{n:"lait",q:500,u:"ml"},{n:"gruyère râpé",q:80,u:"g"}],steps:["CRÊPES — Mélanger la farine avec une pincée de sel. Faire un puits, casser les œufs, incorporer le lait progressivement en fouettant pour obtenir une pâte lisse et sans grumeaux. Ajouter le beurre fondu. Laisser reposer 30 min au frais.","Cuire 4 crêpes fines dans une poêle légèrement beurrée à feu moyen. Elles doivent être bien dorées et souples. Réserver empilées sous un torchon.","BÉCHAMEL — Faire fondre le beurre, ajouter la farine, fouetter 1 min. Verser le lait chaud progressivement en fouettant jusqu'à sauce épaisse et lisse. Saler, poivrer, muscader. Réserver la moitié pour napper, incorporer les champignons hachés et revenus dans le reste.","Hacher finement les champignons. Les faire revenir à feu vif dans un peu de beurre jusqu'à ce que toute leur eau soit évaporée et qu'ils soient bien dorés. Incorporer à la moitié de la béchamel.","MONTAGE — Sur chaque crêpe, déposer 1 tranche de jambon blanc. Étaler 2 càs de béchamel aux champignons. Rouler la crêpe bien serrée. Ranger les 4 rouleaux serrés côte à côte dans un plat à gratin beurré.","Napper généreusement avec la béchamel nature réservée. Saupoudrer de gruyère râpé.","Enfourner à 200°C pendant 15 à 20 min jusqu'à ce que le dessus soit bien gratiné et doré. Servir immédiatement avec une salade verte."]}
+];
+// extend COSTS with meat ids
+Object.assign(COSTS,{56:{t:6.4,l:"low"},57:{t:10.2,l:"mid"},58:{t:8.1,l:"mid"},59:{t:7.2,l:"mid"},28:{t:7.2,l:"mid"},29:{t:7.2,l:"mid"},30:{t:4.7,l:"low"},31:{t:6.4,l:"low"},32:{t:11.5,l:"high"},33:{t:8.1,l:"mid"},34:{t:9.4,l:"mid"},35:{t:8.9,l:"mid"},36:{t:4.7,l:"low"},37:{t:6.4,l:"low"},38:{t:5.5,l:"low"},39:{t:6.0,l:"low"},40:{t:7.2,l:"mid"},41:{t:5.1,l:"low"},42:{t:9.8,l:"mid"},43:{t:10.6,l:"high"},44:{t:12.3,l:"high"},45:{t:8.9,l:"mid"},46:{t:7.7,l:"mid"},47:{t:8.1,l:"mid"},48:{t:9.4,l:"mid"},49:{t:6.4,l:"low"},50:{t:4.7,l:"low"},51:{t:10.6,l:"high"},52:{t:9.4,l:"mid"},53:{t:8.5,l:"mid"},54:{t:8.1,l:"mid"},55:{t:8.5,l:"mid"}});
+// extend EM with meat emojis
+const EM_MEAT=["🍖","🥘","🌭","🍝","🫕","🥗","🍣","🍝","🥪","🥧","🥧","🥧","🥪","🥪","🍲","🦐","🍤","🍗","🍗","🍕","🍕","🥟","🥟","🍔","🍝","🌶","🌯","🍖","🍳","🫕","🥚","🥞"];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let aF='all', aIngF=new Set(), aCuisine='', cMap={}, mP=2, curMIds=[], modP=2, modId=null, uploadTarget=null;
+
+// ─── GITHUB STORAGE CONFIG ────────────────────────────────────────────────────
+// Remplis ces 3 valeurs après avoir créé ton repo GitHub (voir instructions).
+const GH = {
+  owner: '',        // ton nom d'utilisateur GitHub, ex: 'marie-dupont'
+  repo:  '',        // nom du repo, ex: 'mes-recettes'
+  token: ''         // ton token GitHub (Settings > Developer settings > Tokens)
+};
+
+const STORE_EDITS  = 'vegeKitchenEdits';
+const STORE_PHOTOS_CACHE = 'vegeKitchenPhotosCache'; // cache local des photos
+let edits  = {};
+let photos = {};
+try { edits  = JSON.parse(localStorage.getItem(STORE_EDITS)||'{}');  } catch(e){}
+try { photos = JSON.parse(localStorage.getItem(STORE_PHOTOS_CACHE)||'{}'); } catch(e){}
+
+function ghConfigured(){ return GH.owner && GH.repo && GH.token; }
+function saveEdits(){ try{ localStorage.setItem(STORE_EDITS, JSON.stringify(edits)); }catch(e){ showToast('⚠ Sauvegarde impossible.'); } }
+function getPhoto(id){ return photos[id]||null; }
+
+// ── GitHub API helpers ──────────────────────────────────────────────────────
+async function ghGet(path){
+  const r = await fetch(`https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/${path}`,{
+    headers:{'Authorization':`token ${GH.token}`,'Accept':'application/vnd.github.v3+json'}
+  });
+  return r.ok ? r.json() : null;
+}
+
+async function ghPut(path, contentBase64, sha){
+  const body = {message:`Photo recette ${path}`, content:contentBase64};
+  if(sha) body.sha = sha;
+  const r = await fetch(`https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/${path}`,{
+    method:'PUT',
+    headers:{'Authorization':`token ${GH.token}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
+    body: JSON.stringify(body)
+  });
+  return r.ok ? r.json() : null;
+}
+
+async function ghDelete(path, sha){
+  const r = await fetch(`https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/${path}`,{
+    method:'DELETE',
+    headers:{'Authorization':`token ${GH.token}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
+    body: JSON.stringify({message:`Suppression photo ${path}`, sha})
+  });
+  return r.ok;
+}
+
+// ── Photo persistence ────────────────────────────────────────────────────────
+async function savePhotoToGitHub(id, base64jpeg){
+  if(!ghConfigured()){
+    showGHSetupModal();
+    return false;
+  }
+  const path = `photos/recipe_${id}.jpg`;
+  // Get existing SHA if file exists (needed to update)
+  const existing = await ghGet(path);
+  const sha = existing ? existing.sha : undefined;
+  // GitHub wants pure base64 without the data:image/jpeg;base64, prefix
+  const pureB64 = base64jpeg.replace(/^data:image\/\w+;base64,/, '');
+  const result = await ghPut(path, pureB64, sha);
+  if(result){
+    // Store the GitHub raw URL as the photo source
+    const rawUrl = `https://raw.githubusercontent.com/${GH.owner}/${GH.repo}/main/${path}?t=${Date.now()}`;
+    photos[id] = rawUrl;
+    // Also cache base64 locally for immediate display
+    try{ localStorage.setItem(STORE_PHOTOS_CACHE, JSON.stringify(photos)); }catch(e){}
+    return true;
+  }
+  return false;
+}
+
+async function deletePhotoFromGitHub(id){
+  if(!ghConfigured()) return;
+  const path = `photos/recipe_${id}.jpg`;
+  const existing = await ghGet(path);
+  if(existing) await ghDelete(path, existing.sha);
+  delete photos[id];
+  try{ localStorage.setItem(STORE_PHOTOS_CACHE, JSON.stringify(photos)); }catch(e){}
+}
+
+// ── GitHub Setup Modal ───────────────────────────────────────────────────────
+function showGHSetupModal(){
+  document.getElementById('gh-setup-modal').style.display='flex';
+}
+function closeGHSetupModal(){
+  document.getElementById('gh-setup-modal').style.display='none';
+}
+function saveGHConfig(){
+  const owner = document.getElementById('gh-owner').value.trim();
+  const repo  = document.getElementById('gh-repo').value.trim();
+  const token = document.getElementById('gh-token').value.trim();
+  if(!owner||!repo||!token){ showToast('⚠ Remplis tous les champs'); return; }
+  GH.owner=owner; GH.repo=repo; GH.token=token;
+  try{ localStorage.setItem('vegeKitchenGHConfig', JSON.stringify({owner,repo,token})); }catch(e){}
+  closeGHSetupModal();
+  updateGHBadge();
+  showToast('✅ Configuration GitHub sauvegardée !');
+}
+// Load saved GH config on startup
+try{
+  const saved = JSON.parse(localStorage.getItem('vegeKitchenGHConfig')||'{}');
+  if(saved.owner) GH.owner=saved.owner;
+  if(saved.repo)  GH.repo=saved.repo;
+  if(saved.token) GH.token=saved.token;
+}catch(e){}
+
+function removePhoto(id){
+  delete photos[id];
+  renderModal();
+  renderGrid();
+  deletePhotoFromGitHub(id).then(()=>showToast('🗑 Photo supprimée'));
+}
+
+function getEM(id){ return id<28 ? (EM[id]||'🍽') : (EM_MEAT[id-28]||'🍖'); }
+
+// Get effective recipe data (base + user edits merged)
+function getRecipe(id){
+  const base = RECIPES.find(r=>r.id===id);
+  if(!base) return null;
+  const e = edits[id];
+  if(!e) return base;
+  return { ...base,
+    name: e.name ?? base.name,
+    steps: e.steps ?? base.steps,
+    ingredients: e.ingredients ?? base.ingredients};
+}
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+const cs=c=>{
+  if(c==='Plat principal') return {b:'#C4581E',badge:'badge-plat',l:'Plat'};
+  if(c==='Entrée / Snack') return {b:'#B07C1A',badge:'badge-entree',l:'Snack'};
+  if(c==='Bowl') return {b:'#4D7358',badge:'badge-bowl',l:'Bowl'};
+  return {b:'#C0392B',badge:'badge-viande',l:c.split('/')[1]?.trim()||c};
+};
+const sq=(q,bp,p)=>{const r=q*(p/bp);if(!r)return 0;if(r<1)return Math.round(r*4)/4;if(r<10)return Math.round(r*2)/2;return Math.round(r);};
+const fq=(q,u)=>{const v=q%1===0?q:q.toFixed(1).replace('.0','');return u?`${v} ${u}`:`${v}`;};
+const cn=n=>n.toLowerCase().trim();
+const scaleCost=(id,p)=>{const c=COSTS[id];if(!c)return 0;const r=RECIPES.find(r=>r.id===id);return c.t*(p/r.bp);};
+
+// ─── TOAST ────────────────────────────────────────────────────────────────────
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500);}
+
+// ─── PHOTO UPLOAD ─────────────────────────────────────────────────────────────
+function triggerUpload(id, source){
+  uploadTarget = {id, source};
+  const inputId = source==='modal' ? 'upload-modal' : 'upload-card';
+  document.getElementById(inputId).value='';
+  document.getElementById(inputId).click();
+}
+
+function handleUpload(input, source){
+  if(!input.files||!input.files[0]||uploadTarget===null) return;
+  if(!ghConfigured()){ showGHSetupModal(); uploadTarget=null; return; }
+  const file = input.files[0];
+  const savedTarget = uploadTarget;
+  uploadTarget = null;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      const MAX = 900;
+      const ratio = Math.min(1, MAX/img.width, MAX/img.height);
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(img.width*ratio);
+      canvas.height = Math.round(img.height*ratio);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      const b64 = canvas.toDataURL('image/jpeg', 0.82);
+      // Afficher immédiatement en base64
+      photos[savedTarget.id] = b64;
+      if(savedTarget.source==='modal') renderModal(); else renderGrid();
+      showToast('⏳ Envoi vers GitHub…');
+      // Sauvegarder sur GitHub
+      savePhotoToGitHub(savedTarget.id, b64).then(ok=>{
+        if(ok){ if(savedTarget.source==='modal') renderModal(); else renderGrid(); showToast('✅ Photo sauvegardée sur GitHub !'); }
+        else showToast('⚠ Erreur GitHub — vérifie ta configuration.');
+      });
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+
+
+// ─── ING CLOUD ────────────────────────────────────────────────────────────────
+let ingCloudSearch = '';
+function buildCloud(){
+  const f={};RECIPES.forEach(r=>r.ingredients.forEach(i=>{const k=cn(i.n);f[k]=(f[k]||0)+1;}));
+  const q = ingCloudSearch.toLowerCase();
+  const sorted = Object.entries(f).sort((a,b)=>b[1]-a[1]);
+  const filtered = q ? sorted.filter(([n])=>n.includes(q)) : sorted.slice(0,80);
+  const cloudEl = document.getElementById('ing-cloud');
+  cloudEl.innerHTML = filtered.map(([n])=>`<button class="ing-tag${aIngF.has(n)?' active':''}" onclick="tIF('${n.replace(/'/g,"\\'")}')">${n}</button>`).join('');
+}
+function tIF(n){aIngF.has(n)?aIngF.delete(n):aIngF.add(n);buildCloud();renderGrid();}
+function clearIngFilters(){aIngF.clear();ingCloudSearch='';const inp=document.getElementById('ing-search');if(inp)inp.value='';buildCloud();renderGrid();}
+
+// ─── CUISINE FILTER ───────────────────────────────────────────────────────────
+function buildCuisineChips(){
+  const seen = new Map();
+  RECIPES.forEach(r=>{ if(r.cuisine){ const [em,...rest]=r.cuisine.split(' '); const name=rest.join(' '); if(!seen.has(name)) seen.set(name,em); } });
+  const sorted = [...seen.entries()].sort((a,b)=>a[0].localeCompare(b[0],'fr'));
+  document.getElementById('cuisine-chips').innerHTML =
+    sorted.map(([name,em])=>`<button class="cuisine-chip${aCuisine===name?' active':''}" onclick="setCuisine('${name}',this)">${em} ${name}</button>`).join('');
+}
+function setCuisine(name, el){
+  aCuisine = aCuisine===name ? '' : name;
+  document.querySelectorAll('.cuisine-chip').forEach(c=>c.classList.remove('active'));
+  if(aCuisine) el.classList.add('active');
+  renderGrid();
+}
+function clearCuisineFilter(){ aCuisine=''; buildCuisineChips(); renderGrid(); }
+
+// ─── GRID ─────────────────────────────────────────────────────────────────────
+function setFilter(f,el){aF=f;document.querySelectorAll('.filter-row .chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');renderGrid();}
+function renderGrid(){
+  const q=document.getElementById('search').value.toLowerCase();
+  const cf=document.getElementById('cost-filter').value;
+  const VEGE_CATS = new Set(['Plat principal','Entrée / Snack','Bowl']);
+  const fl=RECIPES.filter(r=>{
+    const isVege = VEGE_CATS.has(r.cat);
+    if(aF==='viande' && isVege) return false;
+    if(aF!=='all' && aF!=='viande' && r.cat!==aF) return false;
+    if(cf!=='all'&&COSTS[r.id]&&COSTS[r.id].l!==cf)return false;
+    if(aCuisine && r.cuisine && !r.cuisine.includes(aCuisine)) return false;
+    if(q&&!r.name.toLowerCase().includes(q)&&!r.ingredients.some(i=>i.n.toLowerCase().includes(q)))return false;
+    if(aIngF.size>0){const s=new Set(r.ingredients.map(i=>cn(i.n)));return[...aIngF].every(f=>s.has(f));}
+    return true;
+  });
+  const g=document.getElementById('recipe-grid');
+  if(!fl.length){g.innerHTML='<div class="empty"><big>🥦</big>Aucune recette trouvée</div>';return;}
+  g.innerHTML=fl.map(r=>{
+    const rec=getRecipe(r.id);
+    const s=cs(r.cat);const c=COSTS[r.id];
+    const costBadge=c?`<span class="card-cost cost-${c.l}">${c.l==='low'?'€ Éco':c.l==='mid'?'€€':'€€€'} · ${c.t}€</span>`:'';
+    const photo=getPhoto(r.id);
+    const isEdited=!!edits[r.id];
+    const imgZone = photo
+      ? `<div class="card-img-wrap"><img class="card-img" src="${photo}" alt="${r.name}"><button class="card-img-edit" onclick="event.stopPropagation();triggerUpload(${r.id},'card')">✎ Photo</button></div>`
+      : `<div class="card-img-ph" onclick="event.stopPropagation();triggerUpload(${r.id},'card')"><div class="ph-overlay"><span>📷 Ajouter une photo</span></div><div class="ph-emoji">${getEM(r.id)}</div><div class="ph-hint">Cliquer pour ajouter une photo</div></div>`;
+    return `<div class="recipe-card" onclick="openModal(${r.id})" style="position:relative">${imgZone}<button class="edit-badge" onclick="event.stopPropagation();openEditModal(${r.id})">✎ Modifier${isEdited?'<span class="edited-dot" style="display:inline-block;width:6px;height:5.1px;background:#E8C49A;border-radius:50%;margin-left:3.4px"></span>':''}</button><div class="card-body"><div class="card-top"><div class="card-cat-label" style="color:${s.b}">${r.cat}</div>${costBadge}</div><div class="card-name">${rec.name}${isEdited?'<span class="edited-dot"></span>':''}</div><div class="card-footer"><span class="badge ${s.badge}">${s.l}</span>${rec.cuisine?`<span class="recipe-cuisine-tag">${rec.cuisine}</span>`:''}<span class="card-ings" style="margin-left:auto">${rec.ingredients.length} ing.</span></div></div></div>`;
+  }).join('');
+}
+
+// ─── MODAL ────────────────────────────────────────────────────────────────────
+function openModal(id){modId=id;modP=RECIPES[id].bp;renderModal();document.getElementById('modal-bg').classList.add('open');}
+function sTab(t){document.querySelectorAll('.modal-tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t));document.querySelectorAll('.modal-tab-content').forEach(c=>c.classList.toggle('active',c.dataset.tab===t));}
+
+function renderModal(){
+  const r=getRecipe(modId);const base=RECIPES.find(x=>x.id===modId);
+  const c=COSTS[r.id];const sc=scaleCost(r.id,modP);
+  const isEdited=!!edits[r.id];
+  const photo=getPhoto(r.id);
+
+  // Photo zone
+  const photoZone = photo
+    ? `<div class="modal-photo-zone" onclick="triggerUpload(${r.id},'modal')"><img src="${photo}" alt="${r.name}"><div class="modal-photo-zone-overlay"><div class="upload-cta">Changer la photo</div><div class="upload-sub">Un fichier mis à jour sera téléchargé</div></div><button class="modal-remove-photo" onclick="event.stopPropagation();removePhoto(${r.id})">✕ Supprimer</button></div>`
+    : `<div class="modal-photo-zone" onclick="triggerUpload(${r.id},'modal')"><div class="modal-photo-empty"><span>${getEM(r.id)}</span><p>Cliquer pour ajouter une photo permanente</p></div><div class="modal-photo-zone-overlay"><div class="upload-cta">📷 Choisir une photo</div><div class="upload-sub">Sera sauvegardée dans le fichier HTML</div></div></div>`;
+
+  let ingH='';let ls=null;
+  r.ingredients.forEach(i=>{
+    if(i.s&&i.s!==ls){ingH+=`<li class="ing-sec">${i.s}</li>`;ls=i.s;}
+    const sv=sq(i.q,r.bp,modP);const qd=sv?`<strong>${fq(sv,i.u)}</strong> `:'';
+    const sk=cn(i.n);const hS=SUBS[sk];
+    const sb=hS?`<button class="ing-sub-btn" onclick="showSub('${sk}','${i.n}')">remplacer</button>`:'';
+    ingH+=`<li class="ing-item"><div class="ing-dot"></div><span>${qd}${i.n}</span>${sb}</li>`;
+  });
+  const stH=r.steps.map((s,i)=>`<li class="step-item"><div class="step-n">${i+1}</div><span>${s}</span></li>`).join('');
+  const costH=c?`<div class="cost-breakdown"><div class="cost-title">Estimation du coût <span class="cost-total-num">${sc.toFixed(1)} €</span></div><div class="cost-rows"><div class="cost-row"><span class="cost-row-name">Pour ${modP} pers.</span><span class="cost-row-price">${sc.toFixed(2)} €</span></div><div class="cost-row"><span class="cost-row-name">Par personne</span><span class="cost-row-price">${(sc/modP).toFixed(2)} €</span></div></div><div class="cost-note">* Estimation supermarché. Varie selon saisons et enseignes.</div></div>`:'';
+  const subAllH=buildSubsAll(r);
+
+  document.getElementById('modal-inner').innerHTML=`
+    ${photoZone}
+    <div class="modal-top">
+      <div class="modal-top-cat">${r.cat}</div>
+      <div class="modal-top-name">${r.name}${isEdited?` <span style="font-size:11px;background:rgba(255,255,255,.2);padding:2px 8px;border-radius:8px;font-family:'Outfit',sans-serif;font-weight:425.0;vertical-align:middle">modifiée</span>`:''}</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-top-row">
+        <div class="modal-persons"><span>Personnes :</span><button class="person-btn" onclick="chMP(-1)">−</button><span class="person-count">${modP}</span><button class="person-btn" onclick="chMP(1)">+</button></div>
+        ${c?`<div class="modal-cost-pill"><span>Coût estimé · </span>${sc.toFixed(1)} €</div>`:''}
+        <button style="background:rgba(255,255,255,.18);border:none;color:#fff;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:510.0;cursor:pointer;font-family:'Outfit',sans-serif" onclick="closeModal();openEditModal(${r.id})">✎ Modifier</button>
+      </div>
+    </div>
+    <div class="modal-tabs">
+      <button class="modal-tab active" data-tab="r" onclick="sTab('r')">Recette</button>
+      <button class="modal-tab" data-tab="s" onclick="sTab('s')">Substitutions</button>
+      ${c?'<button class="modal-tab" data-tab="c" onclick="sTab(\'c\')">Coût</button>':''}
+    </div>
+    <div class="modal-tab-content active" data-tab="r"><div class="modal-grid"><div class="modal-col"><div class="modal-col-title">Ingrédients</div><ul class="ing-list">${ingH}</ul></div><div class="modal-col"><div class="modal-col-title">Préparation</div><ol class="step-list">${stH}</ol></div></div></div>
+    <div class="modal-tab-content" data-tab="s"><div id="sub-content">${subAllH}</div></div>
+    ${c?`<div class="modal-tab-content" data-tab="c">${costH}</div>`:''}
+    <div class="modal-actions"><button class="btn-primary" onclick="addTC(${r.id},${modP})">🛒 Ajouter aux courses</button>${r.link?`<a class="btn-link" href="${r.link}" target="_blank">🔗 Recette originale</a>`:''}</div>`;
+}
+
+function buildSubsAll(r){
+  const subs=r.ingredients.filter(i=>SUBS[cn(i.n)]);
+  if(!subs.length)return'<p style="color:var(--muted);font-size:13px;padding:4px 0">Aucune substitution référencée pour cette recette.</p>';
+  return`<p style="font-size:12px;color:var(--muted);margin-bottom:10px">Clique sur "remplacer" à côté d'un ingrédient, ou consulte ici :</p>`+subs.map(i=>{const k=cn(i.n);const opts=SUBS[k];return`<div class="sub-item"><div class="sub-original">🔄 ${i.n}</div>${opts.map(o=>`<div class="sub-opt"><span class="sub-name">${o.n}</span><span class="sub-tag">${o.tag}</span></div><div class="sub-note">${o.note}</div>`).join('')}</div>`;}).join('');
+}
+function showSub(k,name){
+  const opts=SUBS[k];if(!opts)return;
+  sTab('s');
+  document.getElementById('sub-content').innerHTML=`<div style="background:var(--terra-p);border:1.5px solid var(--terra-l);border-radius:12px;padding:14px"><div style="font-size:12px;font-weight:510.0;color:var(--terra-d);margin-bottom:10px">🔄 Remplacer : ${name}</div>${opts.map(o=>`<div class="sub-item"><div class="sub-opt"><span class="sub-name">${o.n}</span><span class="sub-tag">${o.tag}</span></div><div class="sub-note">${o.note}</div></div>`).join('')}</div><button style="font-size:12px;color:var(--terra);background:none;border:none;cursor:pointer;font-family:inherit;margin-top:10px" onclick="renderModal()">← Toutes les substitutions</button>`;
+}
+function chMP(d){modP=Math.max(1,modP+d);renderModal();}
+function closeModal(){document.getElementById('modal-bg').classList.remove('open');}
+
+// ─── COURSES ──────────────────────────────────────────────────────────────────
+function addTC(id,p){cMap[id]={recipe:RECIPES[id],persons:p||modP};updateStats();renderCourses();closeModal();showToast('✓ Ajouté aux courses');}
+function remFC(id){delete cMap[id];updateStats();renderCourses();}
+function clearAllCourses(){cMap={};curMIds=[];updateStats();renderCourses();}
+function buildMerged(){
+  const m={};
+  Object.values(cMap).forEach(({recipe:r,persons:p})=>{r.ingredients.forEach(i=>{const k=cn(i.n);const v=sq(i.q,r.bp,p);if(!m[k])m[k]={name:i.n,total:0,unit:i.u,recipes:new Set()};m[k].total+=v;m[k].recipes.add(r.name);});});
+  return m;
+}
+function grpIngs(m){
+  const G={'🥕 Légumes frais':[],'🥚 Protéines & Frais':[],'🥫 Conserves & Secs':[],'🌾 Féculents & Céréales':[],'🧀 Fromages & Laitiers':[],'🫙 Épices & Condiments':[],'🛢 Huiles & Sauces':[],'🌿 Herbes & Aromates':[],'🧴 Autres':[]};
+  const L=['carotte','courgette','aubergine','poivron','oignon','tomate','concombre','épinards','chou-fleur','patate douce','courge','butternut','potimarron','poireau','ail','échalote','roquette'],P=['œuf','tofu','tempeh','ricotta','yaourt','pois chiches secs'],C=['pois chiches','haricots','lentilles','tomates concassées','pulpe de tomate','concentré'],F=['riz','pâtes','lasagne','nouilles','udon','boulgour','pain','tortillas','pita','chapelure','panko','farine'],Fr=['fromage','mozzarella','feta','comté','gruyère','parmesan','fourme','chèvre','cottage','beurre','lait','crème'],E=['sel','poivre','cumin','curry','paprika','garam','curcuma','muscade','piment','épices','origan','thym'],S=['sauce soja','huile','vinaigre','moutarde','tahini','houmous','hoisin','sriracha','mayonnaise','sirop','miel','ketchup','beurre de cacahuètes','crème de coco','lait de coco'],H=['basilic','persil','coriandre','menthe','ail confit'];
+  Object.values(m).forEach(it=>{const n=it.name.toLowerCase();if(L.some(l=>n.includes(l)))G['🥕 Légumes frais'].push(it);else if(P.some(l=>n.includes(l)))G['🥚 Protéines & Frais'].push(it);else if(C.some(l=>n.includes(l)))G['🥫 Conserves & Secs'].push(it);else if(F.some(l=>n.includes(l)))G['🌾 Féculents & Céréales'].push(it);else if(Fr.some(l=>n.includes(l)))G['🧀 Fromages & Laitiers'].push(it);else if(E.some(l=>n.includes(l)))G['🫙 Épices & Condiments'].push(it);else if(S.some(l=>n.includes(l)))G['🛢 Huiles & Sauces'].push(it);else if(H.some(l=>n.includes(l)))G['🌿 Herbes & Aromates'].push(it);else G['🧴 Autres'].push(it);});
+  return G;
+}
+function renderCourses(){
+  const fE=document.getElementById('courses-from'),mE=document.getElementById('courses-main');
+  const ids=Object.keys(cMap);
+  if(!ids.length){fE.innerHTML='';mE.innerHTML='<div class="courses-empty"><big>🛒</big><p style="color:var(--muted);font-size:14px;margin-top:8px">Ajoutez des recettes pour générer votre liste</p></div>';return;}
+  fE.innerHTML=ids.map(id=>`<div class="recipe-pill">${cMap[id].recipe.name} (${cMap[id].persons} pers.)<button onclick="remFC(${id})">×</button></div>`).join('');
+  const mg=buildMerged();
+  // Only count non-staple shared items as real "savings"
+  const sh=Object.values(mg).filter(i=>i.recipes.size>1 && !isStaple(i.name)).length;
+  const tot=ids.reduce((a,id)=>a+scaleCost(+id,cMap[id].persons),0);
+  const grps=grpIngs(mg);const ti=Object.values(mg).length;
+  mE.innerHTML=`<div class="courses-total-bar"><span>${ti} articles · ${sh} partagés entre recettes</span><div class="courses-budget">Budget estimé : ${tot.toFixed(1)} €</div></div>
+    <div class="courses-groups">${Object.entries(grps).filter(([,v])=>v.length).map(([cat,items])=>`<div class="course-group"><div class="course-group-head">${cat}<span>${items.length} art.</span></div>${items.map((it,i)=>{const uid='ci'+cat.replace(/[^a-z]/gi,'')+i;const qty=it.total>0?fq(it.total,it.unit):'';return`<div class="course-item" id="${uid}"><input type="checkbox" id="cb${uid}" onchange="document.getElementById('${uid}').classList.toggle('done',this.checked)"><label for="cb${uid}">${it.name}</label>${qty?`<span class="course-qty">${qty}</span>`:''} ${(it.recipes.size>1 && !isStaple(it.name))?`<span class="shared-badge">♻ ×${it.recipes.size}</span>`:''}</div>`;}).join('')}</div>`).join('')}</div>`;
+}
+
+// ─── INGRÉDIENTS DE BASE (toujours dans le placard) ───────────────────────────
+// Ces ingrédients sont exclus du calcul des "ingrédients partagés"
+// car on suppose qu'ils sont déjà en cuisine en permanence.
+const STAPLES = new Set([
+  // Matières grasses & huiles
+  'huile d\'olive','huile de sésame','huile neutre','beurre',
+  // Condiments & sauces de base
+  'sauce soja','moutarde','vinaigre','vinaigre de riz','vinaigre balsamique',
+  'concentré de tomates','ketchup','mayonnaise',
+  // Épices & aromates secs
+  'sel','poivre','poivre noir','paprika fumé','paprika','cumin','curcuma',
+  'curry en poudre','pâte de curry','garam masala','noix de muscade','muscade',
+  'piment fumé','flocons de piment','origan','thym','laurier','quatre-épices',
+  'cannelle','coriandre moulue','ras el hanout',
+  // Féculents de base toujours en stock
+  'farine','fécule de maïs','sucre','cassonade',
+  // Liquides de base
+  'bouillon de légumes',
+  // Aromates frais courants
+  'gousse d\'ail','gousses d\'ail','ail confit','oignon','oignon jaune','oignon rouge','échalote',
+  // Autres basiques
+  'sirop d\'érable','miel','levure maltée']);
+
+// Retourne true si un nom d'ingrédient correspond à un basique de placard
+function isStaple(name){
+  const n = name.toLowerCase();
+  return [...STAPLES].some(s => n.includes(s) || s.includes(n));
+}
+
+// ─── MENU ──────────────────────────────────────────────────────────────────────
+function changeMenuPersons(d){mP=Math.max(1,mP+d);document.getElementById('menu-persons-count').textContent=mP;}
+function generateMenu(){
+  const anc=RECIPES[Math.floor(Math.random()*RECIPES.length)];
+  // Only non-staple ingredients count for the overlap scoring
+  const aI=new Set(anc.ingredients.filter(i=>!isStaple(i.n)).map(i=>cn(i.n)));
+  const sc=RECIPES.filter(r=>r.id!==anc.id).map(r=>{
+    const ri=new Set(r.ingredients.filter(i=>!isStaple(i.n)).map(i=>cn(i.n)));
+    const ov=[...ri].filter(i=>aI.has(i)).length;
+    return{r,ov};
+  }).sort((a,b)=>(b.ov*2+Math.random()*1.5)-(a.ov*2+Math.random()*1.5));
+  const sel=[anc,sc[0].r,sc[1].r,sc[2].r];curMIds=sel.map(r=>r.id);
+  // Shared ingredients = non-staples present in 2+ recipes
+  const im={};
+  sel.forEach(r=>r.ingredients.forEach(i=>{
+    if(isStaple(i.n)) return; // skip staples
+    const k=cn(i.n);
+    if(!im[k])im[k]=new Set();
+    im[k].add(r.id);
+  }));
+  const sI=Object.entries(im).filter(([,v])=>v.size>=2).map(([n])=>n);
+  const tot=sel.reduce((a,r)=>a+scaleCost(r.id,mP),0);
+  const infoEl=document.getElementById('menu-info');infoEl.style.display='block';
+  infoEl.innerHTML=`<strong>${sI.length} ingrédient${sI.length>1?'s':''} à acheter en commun</strong> pour plusieurs repas : ${sI.slice(0,7).join(', ')}${sI.length>7?'…':''} · Budget estimé <strong>${tot.toFixed(1)} €</strong> pour ${mP} pers.`;
+  const days=['Lundi','Mardi','Jeudi','Vendredi'];
+  document.getElementById('menu-grid').innerHTML=sel.map((r,idx)=>{
+    const s=cs(r.cat);
+    const ri=new Set(r.ingredients.filter(i=>!isStaple(i.n)).map(i=>cn(i.n)));
+    const myS=sI.filter(s=>ri.has(s)).slice(0,3);
+    const photo=getPhoto(r.id);
+    const imgH=photo?`<img class="menu-day-img" src="${photo}" alt="${r.name}">`:`<div class="menu-day-img-ph">${getEM(r.id)}</div>`;
+    return`<div class="menu-day"><div class="menu-day-head" style="background:${s.b}18"><span class="menu-day-label">${days[idx]}</span><span class="badge ${s.badge}">${s.l}</span></div>${imgH}<div class="menu-day-body"><div class="menu-recipe-name" onclick="openModal(${r.id})">${r.name}</div><div class="menu-cost-line">~${scaleCost(r.id,mP).toFixed(1)}€ pour ${mP} pers.</div>${myS.length?`<div class="shared-ings">${myS.map(i=>`<span class="shared-ing-tag">♻ ${i}</span>`).join('')}</div>`:''}<button class="menu-add-courses" id="mb${r.id}" onclick="addMR(${r.id})">+ Ajouter aux courses</button></div></div>`;
+  }).join('');
+  document.getElementById('menu-add-all-wrap').style.display='block';
+}
+function addMR(id){addTC(id,mP);const b=document.getElementById('mb'+id);if(b){b.textContent='✓ Ajouté';b.classList.add('added');}}
+function addAllMenuToCourses(){curMIds.forEach(id=>addMR(id));}
+
+// ─── NAV & STATS ──────────────────────────────────────────────────────────────
+function showView(n,el){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('view-'+n).classList.add('active');el.classList.add('active');
+  if(n==='courses')renderCourses();
+  if(n==='placard')renderPlacard();
+}
+function updateStats(){
+  const n=Object.keys(cMap).length;
+  document.getElementById('stat-courses').textContent=n;
+  document.getElementById('courses-badge').textContent=n>0?` (${n})`:'';
+  const tot=Object.keys(cMap).reduce((a,id)=>a+scaleCost(+id,cMap[id].persons),0);
+  document.getElementById('stat-budget').textContent=tot>0?tot.toFixed(0)+'€':'0€';
+}
+
+// ─── PLACARD VIDE ─────────────────────────────────────────────────────────────
+let placardItems = [];
+
+// Top ingredients across all recipes (vege + viande), for the quick-add cloud
+const QUICK_INGS = [
+  // Légumes
+  'champignons de Paris','carotte','oignon','courgette','épinards','tomate',
+  'poivron rouge','aubergine','patate douce','courge butternut','chou-fleur','poireau',
+  // Protéines végé
+  'pois chiches','lentilles vertes','lentilles corail','haricots noirs','haricots rouges','tofu ferme',
+  // Protéines viande / poisson
+  'saucisses fumées','saucisses de Toulouse','lardons','bœuf haché','filets de dinde',
+  'saumon fumé','pavé de saumon','crevettes décortiquées','thon en boîte','jambon blanc',
+  'chorizo','mortadelle',
+  // Féculents
+  'riz','pâtes','riz arborio','tagliatelles','spaghetti','tortillas','pâte à pizza',
+  // Produits laitiers / fromages
+  'œuf','feta','mozzarella','parmesan','ricotta','emmental râpé','reblochon',
+  'chèvre frais','cheddar','boursin ail et fines herbes','crème fraîche',
+  // Conserves & sauces
+  'lait de coco','pulpe de tomate','tomates concassées','bisque de homard',
+  'sauce tomate','houmous',
+  // Autres
+  'citron','citron vert','pignons de pin','feuilles de brick'];
+
+function addPlacard() {
+  const inp = document.getElementById('placard-input');
+  const val = inp.value.trim().toLowerCase();
+  if (!val) return;
+  val.split(',').map(v => v.trim()).filter(v => v && !placardItems.includes(v)).forEach(v => placardItems.push(v));
+  inp.value = '';
+  renderPlacard();
+}
+
+function removePlacard(i) {
+  placardItems.splice(i, 1);
+  renderPlacard();
+}
+
+function addQuickIng(name) {
+  const k = name.toLowerCase();
+  if (!placardItems.includes(k)) placardItems.push(k);
+  renderPlacard();
+}
+
+// Score a recipe against what's in the placard
+// Returns { have: [...], need: [...], score: 0-100 }
+function scorePlacard(recipe) {
+  const have = [];
+  const need = [];
+  recipe.ingredients.forEach(i => {
+    const ingName = i.n.toLowerCase();
+    const matched = placardItems.some(p => ingName.includes(p) || p.includes(ingName.split(' ')[0]));
+    if (matched) have.push(i.n);
+    else need.push(i.n);
+  });
+  const score = Math.round((have.length / recipe.ingredients.length) * 100);
+  return { have, need, score };
+}
+
+function renderPlacard() {
+  // Tags
+  const tagsEl = document.getElementById('placard-tags');
+  tagsEl.innerHTML = placardItems.length
+    ? placardItems.map((t, i) => `<div class="placard-tag">${t}<button onclick="removePlacard(${i})">×</button></div>`).join('')
+    : '<span style="font-size:12px;color:var(--muted);padding:4px 0">Aucun ingrédient ajouté</span>';
+
+  // Quick cloud — mark already-used ones
+  const quickEl = document.getElementById('placard-quick');
+  quickEl.innerHTML = QUICK_INGS.map(n => {
+    const used = placardItems.includes(n.toLowerCase());
+    return `<button class="placard-quick-tag${used ? ' used' : ''}" onclick="addQuickIng('${n.toLowerCase().replace(/'/g,"\\'")}')">+ ${n}</button>`;
+  }).join('');
+
+  const resultsEl = document.getElementById('placard-results');
+  if (!placardItems.length) {
+    resultsEl.innerHTML = `<div class="placard-empty-state"><big>🥕</big><p>Ajoute des ingrédients que tu as chez toi — carottes, pois chiches, un reste de butternut… — et je te propose les recettes les plus proches avec la liste de courses minimale.</p></div>`;
+    return;
+  }
+
+  // Score all recipes, sort descending, keep top 8
+  const scored = RECIPES.map(r => ({ r, ...scorePlacard(r) }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 8);
+
+  const best = scored[0].score;
+
+  resultsEl.innerHTML = `
+    <div class="placard-results-header">
+      <div>
+        <div class="placard-results-title">Recettes réalisables</div>
+        <div class="placard-results-sub">${scored.length} recettes triées par % d'ingrédients déjà en ta possession</div>
+      </div>
+    </div>
+    ${scored.map(({ r, have, need, score }) => {
+      const s = cs(r.cat);
+      const photo = getPhoto(r.id);
+      const photoEl = photo
+        ? `<img class="placard-card-photo" src="${photo}" alt="${r.name}">`
+        : `<div class="placard-card-photo-ph">${getEM(r.id) || '🍽'}</div>`;
+
+      // Color ring based on score
+      const ringColor = score >= 70 ? 'var(--sage)' : score >= 40 ? 'var(--gold)' : 'var(--terra)';
+      const circumference = 2 * Math.PI * 16;
+      const dash = (score / 100) * circumference;
+      const ring = `<div class="score-ring">
+        <svg width="40" height="40" viewBox="0 0 40 40">
+          <circle cx="20" cy="20" r="16" fill="none" stroke="var(--border)" stroke-width="3.5"/>
+          <circle cx="20" cy="20" r="16" fill="none" stroke="${ringColor}" stroke-width="3.5"
+            stroke-dasharray="${dash.toFixed(1)} ${circumference.toFixed(1)}" stroke-linecap="round"/>
+        </svg>
+        <div class="score-ring-label" style="color:${ringColor}">${score}%</div>
+      </div>`;
+
+      const haveHtml = have.map(n => `<li class="placard-ing-item"><div class="placard-ing-dot dot-have"></div><span class="placard-ing-name have">✓ ${n}</span></li>`).join('');
+      const needHtml = need.map(n => `<li class="placard-ing-item"><div class="placard-ing-dot dot-need"></div><span class="placard-ing-name need">${n}</span></li>`).join('');
+
+      const complementHtml = need.length ? `
+        <div class="placard-complement-box">
+          <div class="placard-complement-title">🛒 À acheter en complément (${need.length} articles)</div>
+          <div class="placard-complement-items">${need.map(n => `<span class="placard-complement-item">${n}</span>`).join('')}</div>
+          <button class="placard-add-complement" onclick="addPlacardComplement(${r.id})">+ Ajouter cette recette aux courses</button>
+        </div>` : `
+        <div style="background:var(--sage-l);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:13px;color:var(--sage);font-weight:425.0">
+          ✅ Tu as tout ce qu'il faut ! <button class="placard-add-complement" style="margin-top:8px" onclick="addPlacardComplement(${r.id})">Ajouter aux courses quand même</button>
+        </div>`;
+
+      return `<div class="placard-recipe-card">
+        <div class="placard-card-header" onclick="togglePlacardCard(this)">
+          ${photoEl}
+          <div class="placard-card-info">
+            <div class="placard-card-name">${r.name}</div>
+            <div class="placard-match-bar">
+              <span class="placard-match-pct" style="color:${ringColor}">${have.length}/${r.ingredients.length} ingréd.</span>
+              <div class="placard-match-track"><div class="placard-match-fill" style="width:${score}%;background:${ringColor}"></div></div>
+            </div>
+          </div>
+          <div class="placard-card-actions">
+            ${ring}
+            <button class="placard-open-btn" onclick="event.stopPropagation();openModal(${r.id})">Voir recette</button>
+          </div>
+        </div>
+        <div class="placard-card-body" style="display:none">
+          <div class="placard-ing-sections">
+            <div>
+              <div class="placard-ing-col-title">✅ Tu as déjà (${have.length})</div>
+              <ul class="placard-ing-list">${haveHtml || '<li style="font-size:12px;color:var(--muted);padding:4px 0">Aucun</li>'}</ul>
+            </div>
+            <div>
+              <div class="placard-ing-col-title">🛒 À acheter (${need.length})</div>
+              <ul class="placard-ing-list">${needHtml || '<li style="font-size:12px;color:var(--sage);padding:4px 0">Rien ! 🎉</li>'}</ul>
+            </div>
+          </div>
+          ${complementHtml}
+        </div>
+      </div>`;
+    }).join('')}`;
+}
+
+function togglePlacardCard(header) {
+  const body = header.nextElementSibling;
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : 'block';
+}
+
+function addPlacardComplement(recipeId) {
+  // Add to courses with default persons
+  const r = RECIPES.find(r => r.id === recipeId);
+  if (!r) return;
+  cMap[recipeId] = { recipe: r, persons: 2 };
+  updateStats();
+  renderCourses();
+  showToast('✓ Ajouté aux courses !');
+}
+
+// ─── EDIT MODAL ───────────────────────────────────────────────────────────────
+function openEditModal(id){
+  const r = getRecipe(id);
+  const isEdited = !!edits[id];
+
+  const stepsHtml = r.steps.map((s,i)=>`
+    <div class="edit-step-row" id="estep-${i}">
+      <div class="edit-step-num">${i+1}</div>
+      <textarea class="edit-step-ta" rows="3">${escHtml(s)}</textarea>
+      <button class="edit-step-del" onclick="delStep(${i})" title="Supprimer cette étape">×</button>
+    </div>`).join('');
+
+  document.getElementById('edit-modal-inner').innerHTML=`
+    <div class="edit-modal-head">
+      <h2>✎ Modifier « ${r.name} »</h2>
+      <button onclick="closeEditModal()">✕</button>
+    </div>
+    <div class="edit-modal-body">
+      <div class="edit-field">
+        <div class="edit-label">Nom du plat</div>
+        <input class="edit-input" id="edit-name" type="text" value="${escHtml(r.name)}">
+      </div>
+      <div class="edit-field">
+        <div class="edit-label">
+          Étapes de préparation
+          <span>Une étape par bloc — modifie, supprime ou ajoute</span>
+        </div>
+        <div class="edit-steps-list" id="edit-steps-list">${stepsHtml}</div>
+        <button class="edit-add-step" onclick="addStep()">+ Ajouter une étape</button>
+      </div>
+      <div class="edit-field">
+        <div class="edit-label">
+          Ingrédients
+          <span>Format : une ligne par ingrédient</span>
+        </div>
+        <textarea class="edit-input" id="edit-ings" rows="8">${r.ingredients.map(i=>`${i.q?i.q+' '+i.u+' ' :''}${i.n}`).join('\n')}</textarea>
+      </div>
+    </div>
+    <div class="edit-footer">
+      <button class="edit-save" onclick="saveEdit(${id})">✓ Valider et enregistrer</button>
+      ${isEdited?`<button class="edit-reset" onclick="resetEdit(${id})">↺ Rétablir l'original</button>`:''}
+    </div>`;
+
+  document.getElementById('edit-modal-bg').classList.add('open');
+  // store current id for add/del step
+  document.getElementById('edit-modal-bg').dataset.editId = id;
+}
+
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function addStep(){
+  const list = document.getElementById('edit-steps-list');
+  const idx = list.children.length;
+  const div = document.createElement('div');
+  div.className = 'edit-step-row';
+  div.id = `estep-${idx}`;
+  div.innerHTML = `<div class="edit-step-num">${idx+1}</div><textarea class="edit-step-ta" rows="3" placeholder="Décris cette étape..."></textarea><button class="edit-step-del" onclick="this.closest('.edit-step-row').remove();renumberSteps()" title="Supprimer">×</button>`;
+  list.appendChild(div);
+  div.querySelector('textarea').focus();
+}
+
+function delStep(i){
+  const row = document.getElementById(`estep-${i}`);
+  if(row) row.remove();
+  renumberSteps();
+}
+
+function renumberSteps(){
+  document.querySelectorAll('#edit-steps-list .edit-step-row').forEach((row,i)=>{
+    row.id=`estep-${i}`;
+    row.querySelector('.edit-step-num').textContent=i+1;
+    const delBtn=row.querySelector('.edit-step-del');
+    if(delBtn) delBtn.setAttribute('onclick',`delStep(${i})`);
+  });
+}
+
+function saveEdit(id){
+  const name = document.getElementById('edit-name').value.trim();
+  const steps = [...document.querySelectorAll('.edit-step-ta')]
+    .map(ta=>ta.value.trim()).filter(s=>s.length>0);
+  const ingsRaw = document.getElementById('edit-ings').value.trim().split('\n').filter(l=>l.trim());
+
+  // Parse ingredient lines back into objects (best-effort)
+  const base = RECIPES.find(r=>r.id===id);
+  const ingredients = ingsRaw.map(line=>{
+    line=line.trim();
+    // Try to match existing ingredient by name
+    const found = base.ingredients.find(i=>line.toLowerCase().includes(i.n.toLowerCase()));
+    if(found){ return {...found}; }
+    // Otherwise create a simple text ingredient
+    return {n:line, q:0, u:''};
+  });
+
+  if(!name){ showToast('⚠ Le nom ne peut pas être vide'); return; }
+  if(!steps.length){ showToast('⚠ Ajoute au moins une étape'); return; }
+
+  edits[id] = { name, steps, ingredients };
+  saveEdits();
+  closeEditModal();
+  showToast('✓ Modifications enregistrées !');
+  renderGrid();
+}
+
+function resetEdit(id){
+  if(!confirm('Rétablir la recette originale ? Tes modifications seront perdues.')) return;
+  delete edits[id];
+  saveEdits();
+  closeEditModal();
+  showToast('↺ Recette originale restaurée');
+  renderGrid();
+}
+
+function closeEditModal(){
+  document.getElementById('edit-modal-bg').classList.remove('open');
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+function updateGHBadge(){
+  const btn = document.getElementById('gh-status-btn');
+  if(!btn) return;
+  if(ghConfigured()){
+    btn.textContent = `⚙ GitHub: ${GH.repo}`;
+    btn.style.background = 'var(--sage-l)';
+    btn.style.color = 'var(--sage)';
+  } else {
+    btn.textContent = '⚙ Configurer les photos';
+    btn.style.background = 'var(--terra-l)';
+    btn.style.color = 'var(--terra-d)';
+  }
+  // Pre-fill modal fields
+  if(GH.owner) document.getElementById('gh-owner').value = GH.owner;
+  if(GH.repo)  document.getElementById('gh-repo').value  = GH.repo;
+  if(GH.token) document.getElementById('gh-token').value = GH.token;
+}
+
+buildCloud();
+buildCuisineChips();
+renderGrid();
+updateGHBadge();
+</script>
+</body>
+</html>
