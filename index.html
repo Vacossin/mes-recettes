@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🌿 ClémentResto</title>
+
+<meta name="theme-color" content="#4A2C17">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="ClémentResto">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -564,116 +572,98 @@ const EM_MEAT=["🍖","🥘","🌭","🍝","🫕","🥗","🍣","🍝","🥪","�
 let aF='all', aIngF=new Set(), aCuisine='', cMap={}, mP=2, curMIds=[], modP=2, modId=null, uploadTarget=null;
 
 // ─── GITHUB STORAGE CONFIG ────────────────────────────────────────────────────
-// Remplis ces 3 valeurs après avoir créé ton repo GitHub (voir instructions).
-const GH = {
-  owner: '',        // ton nom d'utilisateur GitHub, ex: 'marie-dupont'
-  repo:  '',        // nom du repo, ex: 'mes-recettes'
-  token: ''         // ton token GitHub (Settings > Developer settings > Tokens)
-};
+const GH = { owner:'', repo:'', token:'' };
+const STORE_EDITS = 'vegeKitchenEdits';
+let edits = {};
+let photos = {}; // { [recipeId]: "data:image/jpeg;base64,..." }
+let photosJsonSha = null; // GitHub SHA needed to update the file
 
-const STORE_EDITS  = 'vegeKitchenEdits';
-const STORE_PHOTOS_CACHE = 'vegeKitchenPhotosCache'; // cache local des photos
-let edits  = {};
-let photos = {};
-try { edits  = JSON.parse(localStorage.getItem(STORE_EDITS)||'{}');  } catch(e){}
-try { photos = JSON.parse(localStorage.getItem(STORE_PHOTOS_CACHE)||'{}'); } catch(e){}
+try { edits = JSON.parse(localStorage.getItem(STORE_EDITS)||'{}'); } catch(e){}
+// Load cached photos immediately for fast display
+try { photos = JSON.parse(localStorage.getItem('vegeKitchenPhotos')||'{}'); } catch(e){}
+
+// Load saved GH config
+try {
+  const s = JSON.parse(localStorage.getItem('vegeKitchenGHConfig')||'{}');
+  if(s.owner) GH.owner=s.owner;
+  if(s.repo)  GH.repo=s.repo;
+  if(s.token) GH.token=s.token;
+} catch(e){}
 
 function ghConfigured(){ return GH.owner && GH.repo && GH.token; }
-function saveEdits(){ try{ localStorage.setItem(STORE_EDITS, JSON.stringify(edits)); }catch(e){ showToast('⚠ Sauvegarde impossible.'); } }
+function saveEdits(){ try{ localStorage.setItem(STORE_EDITS,JSON.stringify(edits)); }catch(e){} }
 function getPhoto(id){ return photos[id]||null; }
 
-// ── GitHub API helpers ──────────────────────────────────────────────────────
-async function ghGet(path){
-  const r = await fetch(`https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/${path}`,{
-    headers:{'Authorization':`token ${GH.token}`,'Accept':'application/vnd.github.v3+json'}
-  });
-  return r.ok ? r.json() : null;
+// ── Load photos.json from same origin (no CORS issue) ──────────────────────
+async function loadPhotosFromGitHub(){
+  try {
+    // Fetch from GitHub Pages URL (same origin as site = no CORS)
+    const url = `https://${GH.owner}.github.io/${GH.repo}/photos.json?t=${Date.now()}`;
+    const r = await fetch(url);
+    if(r.ok){
+      const data = await r.json();
+      photos = data;
+      try{ localStorage.setItem('vegeKitchenPhotos', JSON.stringify(photos)); }catch(e){}
+      renderGrid();
+    }
+  } catch(e){ /* use cached version */ }
 }
 
-async function ghPut(path, contentBase64, sha){
-  const body = {message:`Photo recette ${path}`, content:contentBase64};
-  if(sha) body.sha = sha;
-  const r = await fetch(`https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/${path}`,{
-    method:'PUT',
-    headers:{'Authorization':`token ${GH.token}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
-    body: JSON.stringify(body)
-  });
-  return r.ok ? r.json() : null;
-}
+// ── Save photos.json to GitHub via API ─────────────────────────────────────
+async function savePhotosToGitHub(){
+  if(!ghConfigured()) return false;
+  try {
+    // Get current SHA of photos.json if it exists
+    const getR = await fetch(
+      `https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/photos.json`,
+      { headers:{'Authorization':`token ${GH.token}`,'Accept':'application/vnd.github.v3+json'} }
+    );
+    const sha = getR.ok ? (await getR.json()).sha : undefined;
 
-async function ghDelete(path, sha){
-  const r = await fetch(`https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/${path}`,{
-    method:'DELETE',
-    headers:{'Authorization':`token ${GH.token}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
-    body: JSON.stringify({message:`Suppression photo ${path}`, sha})
-  });
-  return r.ok;
-}
+    // Encode photos object as base64 JSON
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(photos))));
+    const body = { message:'Mise à jour photos', content };
+    if(sha) body.sha = sha;
 
-// ── Photo persistence ────────────────────────────────────────────────────────
-async function savePhotoToGitHub(id, base64jpeg){
-  if(!ghConfigured()){
-    showGHSetupModal();
-    return false;
-  }
-  const path = `photos/recipe_${id}.jpg`;
-  // Get existing SHA if file exists (needed to update)
-  const existing = await ghGet(path);
-  const sha = existing ? existing.sha : undefined;
-  // GitHub wants pure base64 without the data:image/jpeg;base64, prefix
-  const pureB64 = base64jpeg.replace(/^data:image\/\w+;base64,/, '');
-  const result = await ghPut(path, pureB64, sha);
-  if(result){
-    // Store the GitHub raw URL as the photo source
-    const rawUrl = `https://raw.githubusercontent.com/${GH.owner}/${GH.repo}/main/${path}?t=${Date.now()}`;
-    photos[id] = rawUrl;
-    // Also cache base64 locally for immediate display
-    try{ localStorage.setItem(STORE_PHOTOS_CACHE, JSON.stringify(photos)); }catch(e){}
-    return true;
-  }
-  return false;
+    const putR = await fetch(
+      `https://api.github.com/repos/${GH.owner}/${GH.repo}/contents/photos.json`,
+      { method:'PUT', headers:{'Authorization':`token ${GH.token}`,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'},
+        body: JSON.stringify(body) }
+    );
+    return putR.ok;
+  } catch(e){ return false; }
 }
-
-async function deletePhotoFromGitHub(id){
-  if(!ghConfigured()) return;
-  const path = `photos/recipe_${id}.jpg`;
-  const existing = await ghGet(path);
-  if(existing) await ghDelete(path, existing.sha);
-  delete photos[id];
-  try{ localStorage.setItem(STORE_PHOTOS_CACHE, JSON.stringify(photos)); }catch(e){}
-}
-
-// ── GitHub Setup Modal ───────────────────────────────────────────────────────
-function showGHSetupModal(){
-  document.getElementById('gh-setup-modal').style.display='flex';
-}
-function closeGHSetupModal(){
-  document.getElementById('gh-setup-modal').style.display='none';
-}
-function saveGHConfig(){
-  const owner = document.getElementById('gh-owner').value.trim();
-  const repo  = document.getElementById('gh-repo').value.trim();
-  const token = document.getElementById('gh-token').value.trim();
-  if(!owner||!repo||!token){ showToast('⚠ Remplis tous les champs'); return; }
-  GH.owner=owner; GH.repo=repo; GH.token=token;
-  try{ localStorage.setItem('vegeKitchenGHConfig', JSON.stringify({owner,repo,token})); }catch(e){}
-  closeGHSetupModal();
-  updateGHBadge();
-  showToast('✅ Configuration GitHub sauvegardée !');
-}
-// Load saved GH config on startup
-try{
-  const saved = JSON.parse(localStorage.getItem('vegeKitchenGHConfig')||'{}');
-  if(saved.owner) GH.owner=saved.owner;
-  if(saved.repo)  GH.repo=saved.repo;
-  if(saved.token) GH.token=saved.token;
-}catch(e){}
 
 function removePhoto(id){
   delete photos[id];
+  try{ localStorage.setItem('vegeKitchenPhotos', JSON.stringify(photos)); }catch(e){}
   renderModal();
   renderGrid();
-  deletePhotoFromGitHub(id).then(()=>showToast('🗑 Photo supprimée'));
+  if(ghConfigured()){
+    savePhotosToGitHub().then(ok => showToast(ok ? '🗑 Photo supprimée' : '⚠ Erreur GitHub'));
+  }
+}
+
+// ── GitHub Setup Modal ──────────────────────────────────────────────────────
+function showGHSetupModal(){
+  document.getElementById('gh-setup-modal').style.display='flex';
+  if(GH.owner) document.getElementById('gh-owner').value=GH.owner;
+  if(GH.repo)  document.getElementById('gh-repo').value=GH.repo;
+  if(GH.token) document.getElementById('gh-token').value=GH.token;
+}
+function closeGHSetupModal(){ document.getElementById('gh-setup-modal').style.display='none'; }
+function saveGHConfig(){
+  const owner=document.getElementById('gh-owner').value.trim();
+  const repo=document.getElementById('gh-repo').value.trim();
+  const token=document.getElementById('gh-token').value.trim();
+  if(!owner||!repo||!token){ showToast('⚠ Remplis tous les champs'); return; }
+  GH.owner=owner; GH.repo=repo; GH.token=token;
+  try{ localStorage.setItem('vegeKitchenGHConfig',JSON.stringify({owner,repo,token})); }catch(e){}
+  closeGHSetupModal();
+  updateGHBadge();
+  // Load photos from GitHub immediately after config
+  loadPhotosFromGitHub();
+  showToast('✅ Configuration sauvegardée !');
 }
 
 function getEM(id){ return id<28 ? (EM[id]||'🍽') : (EM_MEAT[id-28]||'🍖'); }
@@ -728,16 +718,16 @@ function handleUpload(input, source){
       const canvas = document.createElement('canvas');
       canvas.width = Math.round(img.width*ratio);
       canvas.height = Math.round(img.height*ratio);
-      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
-      const b64 = canvas.toDataURL('image/jpeg', 0.82);
-      // Afficher immédiatement en base64
+      canvas.getContext('2d').drawImage(img,0,0,canvas.width,canvas.height);
+      const b64 = canvas.toDataURL('image/jpeg',0.82);
+      // Afficher immédiatement
       photos[savedTarget.id] = b64;
+      try{ localStorage.setItem('vegeKitchenPhotos',JSON.stringify(photos)); }catch(e){}
       if(savedTarget.source==='modal') renderModal(); else renderGrid();
       showToast('⏳ Envoi vers GitHub…');
-      // Sauvegarder sur GitHub
-      savePhotoToGitHub(savedTarget.id, b64).then(ok=>{
-        if(ok){ if(savedTarget.source==='modal') renderModal(); else renderGrid(); showToast('✅ Photo sauvegardée sur GitHub !'); }
-        else showToast('⚠ Erreur GitHub — vérifie ta configuration.');
+      // Sauvegarder photos.json sur GitHub
+      savePhotosToGitHub().then(ok=>{
+        showToast(ok ? '✅ Photo sauvegardée !' : '⚠ Erreur GitHub — vérifie ta configuration.');
       });
     };
     img.src = e.target.result;
@@ -1296,6 +1286,17 @@ buildCloud();
 buildCuisineChips();
 renderGrid();
 updateGHBadge();
+if(ghConfigured()) loadPhotosFromGitHub();
+</script>
+
+<script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js')
+      .then(()=>console.log('SW registered'))
+      .catch(e=>console.log('SW error',e));
+  });
+}
 </script>
 </body>
 </html>
